@@ -24,7 +24,7 @@ While simple and effective, this detection method has some weaknesses:
 - **Timing uncertainty:** The detected start position depends on the threshold and $N_{\text{win}}$;​
 - **Frame Size Limitation:** The receiver's ability to decode frames is limited to a configurable number of OFDM symbols.
 
-### ⚠️ Failure Case:
+### Failure Case:
 → The receiver misses Clear To Send Frames.
 
-Why?: The CTS frame typically follows immediately after a Request To Send frame. While the receiver is still processing the fixed number of samples corresponding to the detected RTS frame, the OFDM Sync Short block remains busy (“valve open”) and does not monitor for new preambles.
+**Why?**: The CTS frame typically follows immediately after a Request To Send frame. While the receiver is still processing the fixed number of samples corresponding to the detected RTS frame, the OFDM Sync Short block remains busy (“valve open”) and does not monitor for new preambles.
