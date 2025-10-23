@@ -136,5 +136,5 @@ sudo ldconfig
 
 ## Contributors
 
-- Wagner Pedrosa 201908556
-- Leonor Pinto
+- Wagner Daniel Teixeira 201908556
+- Maria Leonor Pinto Guedes 202107691
