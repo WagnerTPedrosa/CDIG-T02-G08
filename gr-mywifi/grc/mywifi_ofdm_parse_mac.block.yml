@@ -1,0 +1,21 @@
+id: mywifi_ofdm_parse_mac
+label: OFDM Parse MAC
+category: Mywifi
+flags: [python]
+parameters:
+  - id: debug
+    label: Debug print
+    dtype: bool
+    default: false
+inputs:
+  - domain: message
+    id: in
+outputs:
+  - domain: message
+    id: out
+templates:
+  imports: |-
+    from mywifi.ofdm_parse_mac import ofdm_parse_mac
+  make: |-
+    ofdm_parse_mac(debug=${debug})
+file_format: 1

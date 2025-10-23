@@ -1,0 +1,24 @@
+id: mywifi_ofdm_decode_mac
+label: OFDM Decode MAC
+category: Mywifi
+flags: [python]
+parameters:
+  - id: debug
+    label: Debug print
+    dtype: bool
+    default: false
+inputs:
+  - domain: stream
+    dtype: complex
+    id: in
+    label: 48-subcarrier equalized
+outputs:
+  - domain: message
+    id: out
+    label: MAC PDU (PMT blob)
+templates:
+  imports: |-
+    from mywifi.ofdm_decode_mac import ofdm_decode_mac
+  make: |-
+    ofdm_decode_mac(debug=${debug})
+file_format: 1
