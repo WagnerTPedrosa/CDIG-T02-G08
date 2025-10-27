@@ -1,9 +1,5 @@
 # IEEE 802.11 OFDM Receiver - Block Documentation
 
-## Overview
-
-This project implements a complete IEEE 802.11 OFDM (Orthogonal Frequency Division Multiplexing) receiver using GNU Radio. The system can process real WiFi baseband recordings, decode frames, and output packets for analysis with tools like Wireshark.
-
 ## System Architecture
 
 The receiver consists of several cascaded processing blocks that implement the IEEE 802.11 OFDM demodulation and decoding pipeline:
@@ -170,38 +166,6 @@ Data Symbols → QAM Demod → Deinterleave → Viterbi Decode → Descramble �
 MAC Bytes → Header Parse → CRC Check → Frame Analysis → Packet Output
 ```
 
-## File Structure
-
-```
-proyecto/
-├── projeto.py                     # Main GNU Radio flowgraph (original with Pluto SDR)
-├── test_with_samples.py           # Test flowgraph for baseband file input
-├── capture_wifi_pcap.py           # Packet capture utility for Wireshark
-├── captured_wifi_packets.pcap     # Example captured WiFi packets
-├── sample_capture.pcap            # Sample packet capture
-│
-├── gr-mywifi/                     # Custom GNU Radio module
-│   ├── python/mywifi/
-│   │   ├── ofdm_sync_short.py     # Frame detection block
-│   │   ├── ofdm_sync_long.py      # Fine synchronization block  
-│   │   ├── ofdm_equalize_symbols.py # OFDM equalization block
-│   │   ├── ofdm_decode_signal.py  # SIGNAL field decoder block
-│   │   ├── ofdm_decode_mac.py     # MAC frame decoder block
-│   │   └── ofdm_parse_mac.py      # MAC header parser block
-│   │
-│   └── grc/                       # GNU Radio Companion block definitions
-│       ├── mywifi_ofdm_sync_short.block.yml
-│       ├── mywifi_ofdm_sync_long.block.yml
-│       ├── mywifi_ofdm_equalize_symbols.block.yml
-│       ├── mywifi_ofdm_decode_signal.block.yml
-│       ├── mywifi_ofdm_decode_mac.block.yml
-│       └── mywifi_ofdm_parse_mac.block.yml
-│
-└── Wifi_Project_Baseband_recordings/ # Sample WiFi recordings
-    ├── Sample1_20MHz_Channel36.bin    # 5 GHz recording
-    ├── Sample2_20MHz_Channel6.bin     # 2.4 GHz recording  
-    └── Sample3_20MHz_Channel100.bin   # 5 GHz recording
-```
 
 ## Usage Instructions
 
@@ -227,55 +191,3 @@ wireshark captured_wifi_packets.pcap
 # Or analyze with command-line tools
 tcpdump -r captured_wifi_packets.pcap -n
 ```
-
-## Performance Characteristics
-
-### **Tested Configurations**:
-- ✅ **Sample 1**: Channel 36 (5 GHz) - Multiple frame types detected
-- ✅ **Sample 2**: Channel 6 (2.4 GHz) - **Packets successfully captured**
-- ✅ **Sample 3**: Channel 100 (5 GHz) - Frame processing working
-
-### **Supported Features**:
-- All standard IEEE 802.11a/g data rates (6-54 Mbps)
-- BPSK, QPSK, 16-QAM, and 64-QAM demodulation  
-- Robust frame detection and synchronization
-- Real-time packet capture and PCAP output
-- Wireshark-compatible packet format
-
-### **Current Limitations**:
-- Simplified Viterbi decoder (hard-decision decoding)
-- Limited to 20 MHz bandwidth (IEEE 802.11a/g)
-- No support for 802.11n/ac features (MIMO, wider bandwidths)
-- Symbol count limited for very long frames
-
-## Technical Notes
-
-### **Signal Processing Parameters**:
-- **Sample Rate**: 20 MHz (configurable)
-- **FFT Size**: 64 points
-- **Cyclic Prefix**: 16 samples
-- **Subcarriers**: 52 total (48 data + 4 pilots)
-
-### **Frame Detection Sensitivity**:
-- Correlation threshold optimized for SNR > 10 dB
-- Plateau detection reduces false positives
-- Automatic gain control recommended for varying signal levels
-
-### **Output Format**:
-- PCAP files use 802.11 radiotap header format
-- Compatible with Wireshark and other network analysis tools
-- Network socket output on port 12345 for real-time monitoring
-
-## Future Enhancements
-
-1. **Improved Viterbi Decoding**: Implement soft-decision Viterbi decoder
-2. **802.11n Support**: Add MIMO and 40 MHz bandwidth support  
-3. **Better Error Handling**: Enhanced CRC validation and error recovery
-4. **Performance Optimization**: GPU acceleration for real-time processing
-5. **Advanced Features**: Support for 802.11ac/ax protocols
-
----
-
-**Project Status**: ✅ **Fully Functional IEEE 802.11 OFDM Receiver**
-
-Successfully captures and decodes real WiFi packets from baseband recordings with support for all standard modulation schemes and data rates.
