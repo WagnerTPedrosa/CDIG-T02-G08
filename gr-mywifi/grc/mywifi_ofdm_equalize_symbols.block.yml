@@ -10,11 +10,13 @@ parameters:
 inputs:
   - domain: stream
     dtype: complex
+    vlen: 1
     id: in
     label: 64-subcarrier symbols (complex)
 outputs:
   - domain: stream
     dtype: complex
+    vlen: 1
     id: out
     label: 48-subcarrier equalized (complex)
 templates:

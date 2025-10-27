@@ -4,6 +4,9 @@ gr-mywifi/build/
 **/Build/
 **/BUILD/
 
+# Project specific folders
+Wifi_Project_Baseband_recordings/
+
 # CMake
 CMakeCache.txt
 CMakeFiles/

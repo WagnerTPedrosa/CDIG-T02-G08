@@ -110,7 +110,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    delay: '0'
+    delay: '16'
     maxoutbuf: '0'
     minoutbuf: '0'
     num_ports: '1'
@@ -178,6 +178,42 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [848, 96.0]
+    rotation: 0
+    state: enabled
+- name: blocks_null_sink_0
+  id: blocks_null_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_sink: '[[0,],]'
+    comment: ''
+    num_inputs: '1'
+    type: complex
+    vlen: '64'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 496.0]
+    rotation: 0
+    state: enabled
+- name: blocks_null_source_0
+  id: blocks_null_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_source: '[[0,],]'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_outputs: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [80, 608.0]
     rotation: 0
     state: enabled
 - name: blocks_stream_to_vector_0
@@ -302,7 +338,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [352, 568.0]
+    coordinate: [336, 560.0]
     rotation: 0
     state: enabled
 - name: mywifi_ofdm_parse_mac_0
@@ -824,8 +860,9 @@ connections:
 - [blocks_delay_1, '0', mywifi_ofdm_sync_long_0, in0]
 - [blocks_divide_xx_0, '0', mywifi_ofdm_sync_short_0, in1]
 - [blocks_multiply_xx_0, '0', fir_filter_xxx_0, '0']
+- [blocks_null_source_0, '0', mywifi_ofdm_equalize_symbols_0, in]
 - [blocks_stream_to_vector_0, '0', fft_vxx_0, '0']
-- [fft_vxx_0, '0', mywifi_ofdm_equalize_symbols_0, in]
+- [fft_vxx_0, '0', blocks_null_sink_0, '0']
 - [fir_filter_xxx_0, '0', blocks_complex_to_mag_0, '0']
 - [fir_filter_xxx_1, '0', blocks_divide_xx_0, '1']
 - [mywifi_ofdm_decode_mac_0, MAC PDU (PMT blob), mywifi_ofdm_parse_mac_0, in]
