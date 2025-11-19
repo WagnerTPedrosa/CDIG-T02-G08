@@ -5,33 +5,26 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Projetin
+# Title: Not titled yet
 # GNU Radio version: 3.10.12.0
 
 from PyQt5 import Qt
 from gnuradio import qtgui
 from gnuradio import blocks
+import pmt
 from gnuradio import fft
 from gnuradio.fft import window
 from gnuradio import filter
 from gnuradio.filter import firdes
 from gnuradio import gr
-from gnuradio import pdu
 import sys
 import signal
 from PyQt5 import Qt
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio import network
-from gnuradio import iio
-import time
-from gnuradio.mywifi.ofdm_decode_mac import ofdm_decode_mac
-from gnuradio.mywifi.ofdm_decode_signal import ofdm_decode_signal
-from gnuradio.mywifi.ofdm_equalize_symbols import ofdm_equalize_symbols
-from gnuradio.mywifi.ofdm_parse_mac import ofdm_parse_mac
-from gnuradio.mywifi.ofdm_sync_long import ofdm_sync_long
-from gnuradio.mywifi.ofdm_sync_short import ofdm_sync_short
+import foo
+import ieee802_11
 import threading
 
 
@@ -39,9 +32,9 @@ import threading
 class projeto(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Projetin", catch_exceptions=True)
+        gr.top_block.__init__(self, "Not titled yet", catch_exceptions=True)
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Projetin")
+        self.setWindowTitle("Not titled yet")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -70,47 +63,35 @@ class projeto(gr.top_block, Qt.QWidget):
         self.flowgraph_started = threading.Event()
 
         ##################################################
-        # Variables - IEEE 802.11a Configuration
+        # Variables
         ##################################################
-        # IEEE 802.11a: 5 GHz band, 20 MHz channel bandwidth
-        # Compatible with USRP N210 + XCVR2450 configuration from research
-        self.window_size = window_size = 32000
-        self.samp_rate = samp_rate = int(20e6)  # 20 MHz para IEEE 802.11a
+        self.window_size = window_size = 48
+        self.samp_rate = samp_rate = 20000000
 
         ##################################################
         # Blocks
         ##################################################
 
-        # ADALM Pluto configured for IEEE 802.11a (5 GHz band)
-        self.iio_pluto_source_0 = iio.fmcomms2_source_fc32('ip:192.168.2.1', [True, True], 32768)
-        self.iio_pluto_source_0.set_len_tag_key('packet_len')
-        self.iio_pluto_source_0.set_frequency(int(2.437e9))  # Canal 6 WiFi (2.4 GHz) - para teste
-        self.iio_pluto_source_0.set_samplerate(int(20e6))
-        self.iio_pluto_source_0.set_gain_mode(0, 'manual')
-        self.iio_pluto_source_0.set_gain(0, 70)  # Ganho bem alto para detectar sinais
-        self.iio_pluto_source_0.set_quadrature(True)
-        self.iio_pluto_source_0.set_rfdc(True)
-        self.iio_pluto_source_0.set_bbdc(True)
-        self.iio_pluto_source_0.set_filter_params('Auto', '', 0, 0)
-        self.network_socket_pdu_0 = network.socket_pdu('TCP_SERVER', '', '12345', 10000, False)
-        self.mywifi_ofdm_sync_short_0 = ofdm_sync_short(threshold=0.56, max_samples=8000, min_plateau=2, debug=True)  # Ajustado para 802.11a
-        self.mywifi_ofdm_sync_long_0 = ofdm_sync_long(sync_length=320, freq_est=128, debug=True)
-        self.mywifi_ofdm_parse_mac_0 = ofdm_parse_mac(debug=True)
-        self.mywifi_ofdm_equalize_symbols_0 = ofdm_equalize_symbols(debug=True)
-        self.mywifi_ofdm_decode_signal_0 = ofdm_decode_signal(debug=True)
-        self.mywifi_ofdm_decode_mac_0 = ofdm_decode_mac(debug=True)
-        self.fir_filter_xxx_1 = filter.fir_filter_fff(1, [1]*window_size)
-        self.fir_filter_xxx_1.declare_sample_delay(0)
-        self.fir_filter_xxx_0 = filter.fir_filter_ccc(1, [1]*window_size)
+        self.ieee802_11_sync_short_0 = ieee802_11.sync_short(0.8, 2, True, True)
+        self.ieee802_11_sync_long_0 = ieee802_11.sync_long(240, True, True)
+        self.ieee802_11_parse_mac_0 = ieee802_11.parse_mac(True, True)
+        self.ieee802_11_frame_equalizer_0 = ieee802_11.frame_equalizer(ieee802_11.LS, 5.18e9, 20e6, True, True)
+        self.ieee802_11_decode_mac_0 = ieee802_11.decode_mac(True, False)
+        self.foo_wireshark_connector_0 = foo.wireshark_connector(127, False)
+        self.fir_filter_xxx_0_0 = filter.fir_filter_fff(1, [1] * window_size)
+        self.fir_filter_xxx_0_0.declare_sample_delay(0)
+        self.fir_filter_xxx_0 = filter.fir_filter_ccc(1, [1] * window_size)
         self.fir_filter_xxx_0.declare_sample_delay(0)
-        self.fft_vxx_0 = fft.fft_vcc(64, True, window.rectangular(64), True, 1)
-        self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, 64)
-        self.blocks_stream_to_vector_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, 64)
-        self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
-        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_gr_complex*64)
+        self.fft_vxx_0 = fft.fft_vcc(64, True, [], True, 1)
+        self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
+        self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, 64)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/Wifi_Project_Baseband_recordings/Wifi_Project_Baseband_recordings/Sample1_20MHz_Channel36.bin', True, 0, 0)
+        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/data.pcap', False)
+        self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_divide_xx_0 = blocks.divide_ff(1)
-        self.blocks_delay_1 = blocks.delay(gr.sizeof_gr_complex*1, 240)
+        self.blocks_delay_0_0 = blocks.delay(gr.sizeof_gr_complex*1, 240)
         self.blocks_delay_0 = blocks.delay(gr.sizeof_gr_complex*1, 16)
         self.blocks_conjugate_cc_0 = blocks.conjugate_cc()
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
@@ -120,29 +101,30 @@ class projeto(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.mywifi_ofdm_decode_mac_0, 'out'), (self.mywifi_ofdm_parse_mac_0, 'in'))
-        self.msg_connect((self.mywifi_ofdm_parse_mac_0, 'out'), (self.network_socket_pdu_0, 'pdus'))
+        self.msg_connect((self.ieee802_11_decode_mac_0, 'out'), (self.ieee802_11_parse_mac_0, 'in'))
+        self.msg_connect((self.ieee802_11_parse_mac_0, 'out'), (self.foo_wireshark_connector_0, 'in'))
         self.connect((self.blocks_complex_to_mag_0, 0), (self.blocks_divide_xx_0, 0))
-        self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.fir_filter_xxx_1, 0))
+        self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.fir_filter_xxx_0_0, 0))
         self.connect((self.blocks_conjugate_cc_0, 0), (self.blocks_multiply_xx_0, 0))
         self.connect((self.blocks_delay_0, 0), (self.blocks_conjugate_cc_0, 0))
-        self.connect((self.blocks_delay_0, 0), (self.mywifi_ofdm_sync_short_0, 0))
-        self.connect((self.blocks_delay_1, 0), (self.mywifi_ofdm_sync_long_0, 0))
-        self.connect((self.blocks_divide_xx_0, 0), (self.mywifi_ofdm_sync_short_0, 1))
+        self.connect((self.blocks_delay_0, 0), (self.ieee802_11_sync_short_0, 0))
+        self.connect((self.blocks_delay_0_0, 0), (self.ieee802_11_sync_long_0, 1))
+        self.connect((self.blocks_divide_xx_0, 0), (self.ieee802_11_sync_short_0, 2))
+        self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle2_0, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.fir_filter_xxx_0, 0))
-        self.connect((self.blocks_stream_to_vector_0, 0), (self.fft_vxx_0, 0))
-        self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
-        self.connect((self.blocks_vector_to_stream_0, 0), (self.mywifi_ofdm_equalize_symbols_0, 0))
+        self.connect((self.blocks_stream_to_vector_1, 0), (self.fft_vxx_0, 0))
+        self.connect((self.blocks_throttle2_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
+        self.connect((self.blocks_throttle2_0, 0), (self.blocks_delay_0, 0))
+        self.connect((self.blocks_throttle2_0, 0), (self.blocks_multiply_xx_0, 1))
+        self.connect((self.fft_vxx_0, 0), (self.ieee802_11_frame_equalizer_0, 0))
         self.connect((self.fir_filter_xxx_0, 0), (self.blocks_complex_to_mag_0, 0))
-        self.connect((self.fir_filter_xxx_1, 0), (self.blocks_divide_xx_0, 1))
-        self.connect((self.mywifi_ofdm_decode_signal_0, 0), (self.mywifi_ofdm_decode_mac_0, 0))
-        self.connect((self.mywifi_ofdm_equalize_symbols_0, 0), (self.mywifi_ofdm_decode_signal_0, 0))
-        self.connect((self.mywifi_ofdm_sync_long_0, 0), (self.blocks_stream_to_vector_0, 0))
-        self.connect((self.mywifi_ofdm_sync_short_0, 0), (self.blocks_delay_1, 0))
-        self.connect((self.mywifi_ofdm_sync_short_0, 0), (self.mywifi_ofdm_sync_long_0, 1))
-        self.connect((self.iio_pluto_source_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
-        self.connect((self.iio_pluto_source_0, 0), (self.blocks_delay_0, 0))
-        self.connect((self.iio_pluto_source_0, 0), (self.blocks_multiply_xx_0, 1))
+        self.connect((self.fir_filter_xxx_0, 0), (self.ieee802_11_sync_short_0, 1))
+        self.connect((self.fir_filter_xxx_0_0, 0), (self.blocks_divide_xx_0, 1))
+        self.connect((self.foo_wireshark_connector_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.ieee802_11_frame_equalizer_0, 0), (self.ieee802_11_decode_mac_0, 0))
+        self.connect((self.ieee802_11_sync_long_0, 0), (self.blocks_stream_to_vector_1, 0))
+        self.connect((self.ieee802_11_sync_short_0, 0), (self.blocks_delay_0_0, 0))
+        self.connect((self.ieee802_11_sync_short_0, 0), (self.ieee802_11_sync_long_0, 0))
 
 
     def closeEvent(self, event):
@@ -158,14 +140,15 @@ class projeto(gr.top_block, Qt.QWidget):
 
     def set_window_size(self, window_size):
         self.window_size = window_size
-        self.fir_filter_xxx_0.set_taps([1]*self.window_size)
-        self.fir_filter_xxx_1.set_taps([1]*self.window_size)
+        self.fir_filter_xxx_0.set_taps([1] * self.window_size)
+        self.fir_filter_xxx_0_0.set_taps([1] * self.window_size)
 
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.blocks_throttle2_0.set_sample_rate(self.samp_rate)
 
 
 
