@@ -23,9 +23,8 @@ from PyQt5 import Qt
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio import network
+import foo
 import ieee802_11
-from gnuradio import pdu
 import threading
 
 
@@ -73,12 +72,12 @@ class projeto(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
 
-        self.network_socket_pdu_0 = network.socket_pdu('UDP_SERVER', '', '12345', 10000, False)
         self.ieee802_11_sync_short_0 = ieee802_11.sync_short(0.8, 2, True, True)
         self.ieee802_11_sync_long_0 = ieee802_11.sync_long(240, True, True)
         self.ieee802_11_parse_mac_0 = ieee802_11.parse_mac(True, True)
         self.ieee802_11_frame_equalizer_0 = ieee802_11.frame_equalizer(ieee802_11.LS, 5.18e9, 20e6, True, True)
         self.ieee802_11_decode_mac_0 = ieee802_11.decode_mac(True, False)
+        self.foo_wireshark_connector_0 = foo.wireshark_connector(127, False)
         self.fir_filter_xxx_0_0 = filter.fir_filter_fff(1, [1] * window_size)
         self.fir_filter_xxx_0_0.declare_sample_delay(0)
         self.fir_filter_xxx_0 = filter.fir_filter_ccc(1, [1] * window_size)
@@ -89,6 +88,8 @@ class projeto(gr.top_block, Qt.QWidget):
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/Wifi_Project_Baseband_recordings/Wifi_Project_Baseband_recordings/Sample1_20MHz_Channel36.bin', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/data.pcap', False)
+        self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_divide_xx_0 = blocks.divide_ff(1)
         self.blocks_delay_0_0 = blocks.delay(gr.sizeof_gr_complex*1, 240)
         self.blocks_delay_0 = blocks.delay(gr.sizeof_gr_complex*1, 16)
@@ -101,7 +102,7 @@ class projeto(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.msg_connect((self.ieee802_11_decode_mac_0, 'out'), (self.ieee802_11_parse_mac_0, 'in'))
-        self.msg_connect((self.ieee802_11_parse_mac_0, 'out'), (self.network_socket_pdu_0, 'pdus'))
+        self.msg_connect((self.ieee802_11_parse_mac_0, 'out'), (self.foo_wireshark_connector_0, 'in'))
         self.connect((self.blocks_complex_to_mag_0, 0), (self.blocks_divide_xx_0, 0))
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.fir_filter_xxx_0_0, 0))
         self.connect((self.blocks_conjugate_cc_0, 0), (self.blocks_multiply_xx_0, 0))
@@ -119,6 +120,7 @@ class projeto(gr.top_block, Qt.QWidget):
         self.connect((self.fir_filter_xxx_0, 0), (self.blocks_complex_to_mag_0, 0))
         self.connect((self.fir_filter_xxx_0, 0), (self.ieee802_11_sync_short_0, 1))
         self.connect((self.fir_filter_xxx_0_0, 0), (self.blocks_divide_xx_0, 1))
+        self.connect((self.foo_wireshark_connector_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.ieee802_11_frame_equalizer_0, 0), (self.ieee802_11_decode_mac_0, 0))
         self.connect((self.ieee802_11_sync_long_0, 0), (self.blocks_stream_to_vector_1, 0))
         self.connect((self.ieee802_11_sync_short_0, 0), (self.blocks_delay_0_0, 0))
