@@ -45,6 +45,18 @@ blocks:
     coordinate: [184, 12]
     rotation: 0
     state: enabled
+- name: window_size
+  id: variable
+  parameters:
+    comment: ''
+    value: '48'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [296, 16.0]
+    rotation: 0
+    state: enabled
 - name: blocks_complex_to_mag_0
   id: blocks_complex_to_mag
   parameters:
@@ -58,7 +70,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [952, 200.0]
+    coordinate: [1248, 200.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_squared_0
@@ -74,7 +86,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [448, 328.0]
+    coordinate: [584, 328.0]
     rotation: 0
     state: enabled
 - name: blocks_conjugate_cc_0
@@ -89,7 +101,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [440, 248.0]
+    coordinate: [584, 176.0]
     rotation: 0
     state: enabled
 - name: blocks_delay_0
@@ -109,7 +121,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [416, 96.0]
+    coordinate: [480, 88.0]
     rotation: 0
     state: enabled
 - name: blocks_delay_0_0
@@ -129,7 +141,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [896, 416.0]
+    coordinate: [1040, 440.0]
     rotation: 180
     state: enabled
 - name: blocks_divide_xx_0
@@ -147,7 +159,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1176, 200.0]
+    coordinate: [1448, 200.0]
     rotation: 0
     state: enabled
 - name: blocks_file_source_0
@@ -157,7 +169,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/wagner/Downloads/Wifi_Project_Baseband_recordings/Sample1_20MHz_Channel36.bin
+    file: /home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/Wifi_Project_Baseband_recordings/Wifi_Project_Baseband_recordings/Sample1_20MHz_Channel36.bin
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -187,7 +199,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [624, 192.0]
+    coordinate: [784, 184.0]
     rotation: 0
     state: enabled
 - name: blocks_stream_to_vector_1
@@ -205,7 +217,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [440, 408.0]
+    coordinate: [568, 432.0]
     rotation: 180
     state: enabled
 - name: blocks_throttle2_0
@@ -226,7 +238,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [224, 184.0]
+    coordinate: [248, 184.0]
     rotation: 0
     state: enabled
 - name: fft_vxx_0
@@ -247,7 +259,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [120, 368.0]
+    coordinate: [120, 392.0]
     rotation: 180
     state: enabled
 - name: fir_filter_xxx_0
@@ -260,13 +272,13 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_delay: '0'
-    taps: firdes.low_pass(1,20e6,10e6,1e6,window.WIN_HAMMING,6.76)
+    taps: '[1] * window_size'
     type: ccc
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [744, 192.0]
+    coordinate: [960, 184.0]
     rotation: 0
     state: enabled
 - name: fir_filter_xxx_0_0
@@ -279,13 +291,13 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_delay: '0'
-    taps: firdes.low_pass(1,20e6,10e6,1e6,window.WIN_HAMMING,6.76)
+    taps: '[1] * window_size'
     type: fff
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [744, 304.0]
+    coordinate: [880, 304.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_decode_mac_0
@@ -302,7 +314,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 528.0]
+    coordinate: [608, 576.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_frame_equalizer_0
@@ -314,7 +326,7 @@ blocks:
     bw: 20e6
     comment: ''
     debug: 'True'
-    freq: 5.89e9
+    freq: 5.18e9
     log: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -322,7 +334,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [136, 504.0]
+    coordinate: [120, 568.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_parse_mac_0
@@ -339,7 +351,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [640, 536.0]
+    coordinate: [856, 576.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_sync_long_0
@@ -357,7 +369,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [640, 408.0]
+    coordinate: [776, 408.0]
     rotation: 180
     state: enabled
 - name: ieee802_11_sync_short_0
@@ -371,122 +383,33 @@ blocks:
     maxoutbuf: '0'
     min_plateau: '2'
     minoutbuf: '0'
-    threshold: '0.5'
+    threshold: '0.8'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1120, 360.0]
+    coordinate: [1424, 392.0]
     rotation: 180
     state: enabled
-- name: pdu_pdu_to_tagged_stream_0
-  id: pdu_pdu_to_tagged_stream
+- name: network_socket_pdu_0
+  id: network_socket_pdu
   parameters:
     affinity: ''
     alias: ''
     comment: ''
+    host: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    tag: packet_len
-    type: complex
+    mtu: '10000'
+    port: '12345'
+    tcp_no_delay: 'False'
+    type: UDP_SERVER
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [288, 704.0]
-    rotation: 180
-    state: enabled
-- name: qtgui_const_sink_x_0
-  id: qtgui_const_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'False'
-    axislabels: 'True'
-    color1: '"blue"'
-    color10: '"dark blue"'
-    color2: '"red"'
-    color3: '"green"'
-    color4: '"black"'
-    color5: '"cyan"'
-    color6: '"magenta"'
-    color7: '"yellow"'
-    color8: '"dark red"'
-    color9: '"dark green"'
-    comment: ''
-    grid: 'False'
-    gui_hint: ''
-    label1: ''
-    label10: ''
-    label2: ''
-    label3: ''
-    label4: ''
-    label5: ''
-    label6: ''
-    label7: ''
-    label8: ''
-    label9: ''
-    legend: 'True'
-    marker1: '0'
-    marker10: '0'
-    marker2: '0'
-    marker3: '0'
-    marker4: '0'
-    marker5: '0'
-    marker6: '0'
-    marker7: '0'
-    marker8: '0'
-    marker9: '0'
-    name: '""'
-    nconnections: '1'
-    size: '480'
-    style1: '0'
-    style10: '0'
-    style2: '0'
-    style3: '0'
-    style4: '0'
-    style5: '0'
-    style6: '0'
-    style7: '0'
-    style8: '0'
-    style9: '0'
-    tr_chan: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: complex
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    xmax: '2'
-    xmin: '-2'
-    ymax: '2'
-    ymin: '-2'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [64, 656.0]
-    rotation: 180
+    coordinate: [1088, 544.0]
+    rotation: 0
     state: enabled
 
 connections:
@@ -509,12 +432,11 @@ connections:
 - [fir_filter_xxx_0_0, '0', blocks_divide_xx_0, '1']
 - [ieee802_11_decode_mac_0, out, ieee802_11_parse_mac_0, in]
 - [ieee802_11_frame_equalizer_0, '0', ieee802_11_decode_mac_0, '0']
-- [ieee802_11_frame_equalizer_0, symbols, pdu_pdu_to_tagged_stream_0, pdus]
+- [ieee802_11_parse_mac_0, out, network_socket_pdu_0, pdus]
 - [ieee802_11_sync_long_0, '0', blocks_stream_to_vector_1, '0']
 - [ieee802_11_sync_short_0, '0', blocks_delay_0_0, '0']
 - [ieee802_11_sync_short_0, '0', ieee802_11_sync_long_0, '0']
-- [pdu_pdu_to_tagged_stream_0, '0', qtgui_const_sink_x_0, '0']
 
 metadata:
   file_format: 1
-  grc_version: 3.10.9.2
+  grc_version: 3.10.12.0
