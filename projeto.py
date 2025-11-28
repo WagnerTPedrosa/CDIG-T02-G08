@@ -10,6 +10,8 @@
 
 from PyQt5 import Qt
 from gnuradio import qtgui
+from PyQt5 import QtCore
+from PyQt5.QtCore import QObject, pyqtSlot
 from gnuradio import blocks
 import pmt
 from gnuradio import fft
@@ -66,17 +68,77 @@ class projeto(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.window_size = window_size = 48
+        self.threshold = threshold = 0.80
         self.samp_rate = samp_rate = 20000000
+        self.freq = freq = 5.18e9
+        self.chan_est = chan_est = 0
 
         ##################################################
         # Blocks
         ##################################################
 
-        self.ieee802_11_sync_short_0 = ieee802_11.sync_short(0.8, 2, True, True)
-        self.ieee802_11_sync_long_0 = ieee802_11.sync_long(240, True, True)
-        self.ieee802_11_parse_mac_0 = ieee802_11.parse_mac(True, True)
-        self.ieee802_11_frame_equalizer_0 = ieee802_11.frame_equalizer(ieee802_11.LS, 5.18e9, 20e6, True, True)
-        self.ieee802_11_decode_mac_0 = ieee802_11.decode_mac(True, False)
+        self._threshold_range = qtgui.Range(0.1, 0.99, 0.01, 0.80, 200)
+        self._threshold_win = qtgui.RangeWidget(self._threshold_range, self.set_threshold, "Sync Short Threshold", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._threshold_win)
+        # Create the options list
+        self._freq_options = [5180000000.0, 5200000000.0, 5220000000.0, 5240000000.0, 5745000000.0]
+        # Create the labels list
+        self._freq_labels = ['ch 36 (5.18 GHz)', 'Ch 40 (5.20 GHz)', 'Ch 44 (5.22 GHz)', 'Ch 48 (5.24 GHz)', 'Ch 149 (5.745 GHz)']
+        # Create the combo box
+        # Create the radio buttons
+        self._freq_group_box = Qt.QGroupBox("WiFi Frame Equalizer Frequency" + ": ")
+        self._freq_box = Qt.QHBoxLayout()
+        class variable_chooser_button_group(Qt.QButtonGroup):
+            def __init__(self, parent=None):
+                Qt.QButtonGroup.__init__(self, parent)
+            @pyqtSlot(int)
+            def updateButtonChecked(self, button_id):
+                self.button(button_id).setChecked(True)
+        self._freq_button_group = variable_chooser_button_group()
+        self._freq_group_box.setLayout(self._freq_box)
+        for i, _label in enumerate(self._freq_labels):
+            radio_button = Qt.QRadioButton(_label)
+            self._freq_box.addWidget(radio_button)
+            self._freq_button_group.addButton(radio_button, i)
+        self._freq_callback = lambda i: Qt.QMetaObject.invokeMethod(self._freq_button_group, "updateButtonChecked", Qt.Q_ARG("int", self._freq_options.index(i)))
+        self._freq_callback(self.freq)
+        self._freq_button_group.buttonClicked[int].connect(
+            lambda i: self.set_freq(self._freq_options[i]))
+        self.top_grid_layout.addWidget(self._freq_group_box, 0, 1, 1, 1)
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(1, 2):
+            self.top_grid_layout.setColumnStretch(c, 1)
+        # Create the options list
+        self._chan_est_options = [0, 1, 2, 3]
+        # Create the labels list
+        self._chan_est_labels = ['LS', 'LMS', 'Linear Comb', 'STA']
+        # Create the combo box
+        # Create the radio buttons
+        self._chan_est_group_box = Qt.QGroupBox("'chan_est'" + ": ")
+        self._chan_est_box = Qt.QHBoxLayout()
+        class variable_chooser_button_group(Qt.QButtonGroup):
+            def __init__(self, parent=None):
+                Qt.QButtonGroup.__init__(self, parent)
+            @pyqtSlot(int)
+            def updateButtonChecked(self, button_id):
+                self.button(button_id).setChecked(True)
+        self._chan_est_button_group = variable_chooser_button_group()
+        self._chan_est_group_box.setLayout(self._chan_est_box)
+        for i, _label in enumerate(self._chan_est_labels):
+            radio_button = Qt.QRadioButton(_label)
+            self._chan_est_box.addWidget(radio_button)
+            self._chan_est_button_group.addButton(radio_button, i)
+        self._chan_est_callback = lambda i: Qt.QMetaObject.invokeMethod(self._chan_est_button_group, "updateButtonChecked", Qt.Q_ARG("int", self._chan_est_options.index(i)))
+        self._chan_est_callback(self.chan_est)
+        self._chan_est_button_group.buttonClicked[int].connect(
+            lambda i: self.set_chan_est(self._chan_est_options[i]))
+        self.top_layout.addWidget(self._chan_est_group_box)
+        self.ieee802_11_sync_short_0 = ieee802_11.sync_short(threshold, 2, False, False)
+        self.ieee802_11_sync_long_0 = ieee802_11.sync_long(240, False, False)
+        self.ieee802_11_parse_mac_0 = ieee802_11.parse_mac(False, True)
+        self.ieee802_11_frame_equalizer_0 = ieee802_11.frame_equalizer(chan_est, freq, samp_rate, False, False)
+        self.ieee802_11_decode_mac_0 = ieee802_11.decode_mac(False, False)
         self.foo_wireshark_connector_0 = foo.wireshark_connector(127, False)
         self.fir_filter_xxx_0_0 = filter.fir_filter_fff(1, [1] * window_size)
         self.fir_filter_xxx_0_0.declare_sample_delay(0)
@@ -143,12 +205,35 @@ class projeto(gr.top_block, Qt.QWidget):
         self.fir_filter_xxx_0.set_taps([1] * self.window_size)
         self.fir_filter_xxx_0_0.set_taps([1] * self.window_size)
 
+    def get_threshold(self):
+        return self.threshold
+
+    def set_threshold(self, threshold):
+        self.threshold = threshold
+
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.blocks_throttle2_0.set_sample_rate(self.samp_rate)
+        self.ieee802_11_frame_equalizer_0.set_bandwidth(self.samp_rate)
+
+    def get_freq(self):
+        return self.freq
+
+    def set_freq(self, freq):
+        self.freq = freq
+        self._freq_callback(self.freq)
+        self.ieee802_11_frame_equalizer_0.set_frequency(self.freq)
+
+    def get_chan_est(self):
+        return self.chan_est
+
+    def set_chan_est(self, chan_est):
+        self.chan_est = chan_est
+        self._chan_est_callback(self.chan_est)
+        self.ieee802_11_frame_equalizer_0.set_algorithm(self.chan_est)
 
 
 
