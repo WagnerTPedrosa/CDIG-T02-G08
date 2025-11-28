@@ -68,16 +68,17 @@ class projeto(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.window_size = window_size = 48
-        self.threshold = threshold = 0.80
+        self.threshold = threshold = 0.56
         self.samp_rate = samp_rate = 20000000
         self.freq = freq = 5.18e9
         self.chan_est = chan_est = 0
+        self.PlutoSDR_gain = PlutoSDR_gain = 50
 
         ##################################################
         # Blocks
         ##################################################
 
-        self._threshold_range = qtgui.Range(0.1, 0.99, 0.01, 0.80, 200)
+        self._threshold_range = qtgui.Range(0.1, 0.99, 0.01, 0.56, 200)
         self._threshold_win = qtgui.RangeWidget(self._threshold_range, self.set_threshold, "Sync Short Threshold", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._threshold_win)
         # Create the options list
@@ -158,6 +159,9 @@ class projeto(gr.top_block, Qt.QWidget):
         self.blocks_conjugate_cc_0 = blocks.conjugate_cc()
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
         self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
+        self._PlutoSDR_gain_range = qtgui.Range(0, 70, 1, 50, 200)
+        self._PlutoSDR_gain_win = qtgui.RangeWidget(self._PlutoSDR_gain_range, self.set_PlutoSDR_gain, "'PlutoSDR_gain'", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._PlutoSDR_gain_win)
 
 
         ##################################################
@@ -234,6 +238,12 @@ class projeto(gr.top_block, Qt.QWidget):
         self.chan_est = chan_est
         self._chan_est_callback(self.chan_est)
         self.ieee802_11_frame_equalizer_0.set_algorithm(self.chan_est)
+
+    def get_PlutoSDR_gain(self):
+        return self.PlutoSDR_gain
+
+    def set_PlutoSDR_gain(self, PlutoSDR_gain):
+        self.PlutoSDR_gain = PlutoSDR_gain
 
 
 
