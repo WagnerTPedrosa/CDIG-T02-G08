@@ -14,6 +14,7 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import QObject, pyqtSlot
 from gnuradio import blocks
 import pmt
+from gnuradio import blocks, gr
 from gnuradio import fft
 from gnuradio.fft import window
 from gnuradio import filter
@@ -149,6 +150,7 @@ class projeto(gr.top_block, Qt.QWidget):
         self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, 64)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
+        self.blocks_message_debug_0 = blocks.message_debug(True, gr.log_levels.info)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/Wifi_Project_Baseband_recordings/Wifi_Project_Baseband_recordings/Sample1_20MHz_Channel36.bin', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/data.pcap', False)
@@ -168,6 +170,7 @@ class projeto(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.msg_connect((self.ieee802_11_decode_mac_0, 'out'), (self.ieee802_11_parse_mac_0, 'in'))
+        self.msg_connect((self.ieee802_11_parse_mac_0, 'out'), (self.blocks_message_debug_0, 'print'))
         self.msg_connect((self.ieee802_11_parse_mac_0, 'out'), (self.foo_wireshark_connector_0, 'in'))
         self.connect((self.blocks_complex_to_mag_0, 0), (self.blocks_divide_xx_0, 0))
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.fir_filter_xxx_0_0, 0))
