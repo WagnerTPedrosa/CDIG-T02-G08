@@ -28,11 +28,93 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 8]
+    coordinate: [24, 152.0]
     rotation: 0
     state: enabled
 
 blocks:
+- name: PlutoSDR_gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '70'
+    value: '50'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [192, 616.0]
+    rotation: 0
+    state: enabled
+- name: chan_est
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    label0: ''
+    label1: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '["LS", "LMS", "Linear Comb", "STA"]'
+    num_opts: '0'
+    option0: '0'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[0, 1, 2, 3]'
+    orient: Qt.QHBoxLayout
+    type: int
+    value: '0'
+    widget: radio_buttons
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [32, 744.0]
+    rotation: 0
+    state: enabled
+- name: freq
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: 0,1,1,1
+    label: WiFi Frame Equalizer Frequency
+    label0: ch 36 (5.18 GHz)
+    label1: Ch 40 (5.20 GHz)
+    label2: Ch 44 (5.22 GHz)
+    label3: Ch 48 (5.24 GHz)
+    label4: Ch 149 (5.745 GHz)
+    labels: '["BPSK 1/2", "BPSK 3/4", "QPSK 1/2", "QPSK 3/4", "16QAM 1/2", "16QAM
+      3/4", "64QAM 2/3", "64QAM 3/4"]'
+    num_opts: '5'
+    option0: 5.18e9
+    option1: 5.20e9
+    option2: 5.22e9
+    option3: 5.24e9
+    option4: 5.745e9
+    options: '[0, 1, 2, 3, 4, 5, 6, 7]'
+    orient: Qt.QHBoxLayout
+    type: raw
+    value: 5.18e9
+    widget: radio_buttons
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [24, 320.0]
+    rotation: 0
+    state: enabled
 - name: samp_rate
   id: variable
   parameters:
@@ -42,7 +124,28 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 12]
+    coordinate: [120, 248.0]
+    rotation: 0
+    state: enabled
+- name: threshold
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Sync Short Threshold
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0.1'
+    step: '0.01'
+    stop: '0.99'
+    value: '0.56'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [24, 608.0]
     rotation: 0
     state: enabled
 - name: window_size
@@ -54,7 +157,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [296, 16.0]
+    coordinate: [16, 248.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_0
@@ -70,7 +173,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1248, 200.0]
+    coordinate: [1480, 128.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_squared_0
@@ -86,7 +189,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [584, 328.0]
+    coordinate: [816, 256.0]
     rotation: 0
     state: enabled
 - name: blocks_conjugate_cc_0
@@ -101,7 +204,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [584, 176.0]
+    coordinate: [816, 104.0]
     rotation: 0
     state: enabled
 - name: blocks_delay_0
@@ -121,7 +224,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [480, 88.0]
+    coordinate: [712, 16.0]
     rotation: 0
     state: enabled
 - name: blocks_delay_0_0
@@ -141,7 +244,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1040, 440.0]
+    coordinate: [1272, 368.0]
     rotation: 180
     state: enabled
 - name: blocks_divide_xx_0
@@ -159,7 +262,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1448, 200.0]
+    coordinate: [1680, 128.0]
     rotation: 0
     state: enabled
 - name: blocks_file_sink_0
@@ -169,7 +272,7 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: /home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/data.pcap
+    file: "/Users/wagner/Desktop/FEUP/4\xBA Ano/CDIG/CDIG-T02-G08/data.pcap"
     type: byte
     unbuffered: 'False'
     vlen: '1'
@@ -177,7 +280,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1304, 560.0]
+    coordinate: [1536, 496.0]
     rotation: 0
     state: enabled
 - name: blocks_file_source_0
@@ -187,7 +290,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/Wifi_Project_Baseband_recordings/Wifi_Project_Baseband_recordings/Sample1_20MHz_Channel36.bin
+    file: "/Users/wagner/Desktop/FEUP/4\xBA Ano/CDIG/CDIG-T02-G08/Wifi_Project_Baseband_recordings/Sample1_20MHz_Channel36.bin"
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -199,7 +302,22 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [0, 152.0]
+    coordinate: [8, 16.0]
+    rotation: 0
+    state: enabled
+- name: blocks_message_debug_0
+  id: blocks_message_debug
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    en_uvec: 'True'
+    log_level: info
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1368, 608.0]
     rotation: 0
     state: enabled
 - name: blocks_multiply_xx_0
@@ -217,7 +335,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [784, 184.0]
+    coordinate: [1016, 112.0]
     rotation: 0
     state: enabled
 - name: blocks_stream_to_vector_1
@@ -235,7 +353,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [568, 432.0]
+    coordinate: [800, 360.0]
     rotation: 180
     state: enabled
 - name: blocks_throttle2_0
@@ -256,7 +374,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [248, 184.0]
+    coordinate: [312, 48.0]
     rotation: 0
     state: enabled
 - name: fft_vxx_0
@@ -277,7 +395,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [120, 392.0]
+    coordinate: [496, 352.0]
     rotation: 180
     state: enabled
 - name: fir_filter_xxx_0
@@ -296,7 +414,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [960, 184.0]
+    coordinate: [1192, 112.0]
     rotation: 0
     state: enabled
 - name: fir_filter_xxx_0_0
@@ -315,7 +433,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [880, 304.0]
+    coordinate: [1112, 232.0]
     rotation: 0
     state: enabled
 - name: foo_wireshark_connector_0
@@ -332,7 +450,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1056, 576.0]
+    coordinate: [1288, 504.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_decode_mac_0
@@ -342,34 +460,34 @@ blocks:
     alias: ''
     comment: ''
     debug: 'False'
-    log: 'True'
+    log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [608, 576.0]
+    coordinate: [840, 504.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_frame_equalizer_0
   id: ieee802_11_frame_equalizer
   parameters:
     affinity: ''
-    algo: ieee802_11.LS
+    algo: chan_est
     alias: ''
-    bw: 20e6
+    bw: samp_rate
     comment: ''
-    debug: 'True'
-    freq: 5.18e9
-    log: 'True'
+    debug: 'False'
+    freq: freq
+    log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [120, 568.0]
+    coordinate: [496, 504.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_parse_mac_0
@@ -379,14 +497,14 @@ blocks:
     alias: ''
     comment: ''
     debug: 'True'
-    log: 'True'
+    log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [856, 576.0]
+    coordinate: [1088, 504.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_sync_long_0
@@ -395,8 +513,8 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    debug: 'True'
-    log: 'True'
+    debug: 'False'
+    log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
     sync_length: '240'
@@ -404,7 +522,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [776, 408.0]
+    coordinate: [1008, 336.0]
     rotation: 180
     state: enabled
 - name: ieee802_11_sync_short_0
@@ -413,19 +531,50 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    debug: 'True'
-    log: 'True'
+    debug: 'False'
+    log: 'False'
     maxoutbuf: '0'
     min_plateau: '2'
     minoutbuf: '0'
-    threshold: '0.8'
+    threshold: threshold
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1424, 392.0]
+    coordinate: [1656, 320.0]
     rotation: 180
     state: enabled
+- name: iio_pluto_source_0
+  id: iio_pluto_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '20000000'
+    bbdc: 'False'
+    buffer_size: '262144'
+    comment: ''
+    filter: ''
+    filter_source: '''Auto'''
+    fpass: '0'
+    frequency: int(freq)
+    fstop: '0'
+    gain1: '''manual'''
+    len_tag_key: packet_len
+    manual_gain1: PlutoSDR_gain
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    quadrature: 'True'
+    rfdc: 'True'
+    samplerate: samp_rate
+    type: fc32
+    uri: usb:1.4.5
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [224, 196.0]
+    rotation: 0
+    state: disabled
 - name: pdu_pdu_to_tagged_stream_0
   id: pdu_pdu_to_tagged_stream
   parameters:
@@ -440,7 +589,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [400, 760.0]
+    coordinate: [632, 688.0]
     rotation: 180
     state: disabled
 - name: qtgui_const_sink_x_0
@@ -532,7 +681,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [144, 752.0]
+    coordinate: [376, 680.0]
     rotation: 180
     state: disabled
 - name: qtgui_time_sink_x_0
@@ -629,7 +778,68 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1584, 128.0]
+    coordinate: [1816, 56.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_waterfall_sink_x_0
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: freq
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '"WiFi Signal"'
+    nconnections: '1'
+    showports: 'False'
+    type: complex
+    update_time: '0.10'
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [240, 464.0]
     rotation: 0
     state: disabled
 
@@ -656,10 +866,15 @@ connections:
 - [ieee802_11_decode_mac_0, out, ieee802_11_parse_mac_0, in]
 - [ieee802_11_frame_equalizer_0, '0', ieee802_11_decode_mac_0, '0']
 - [ieee802_11_frame_equalizer_0, symbols, pdu_pdu_to_tagged_stream_0, pdus]
+- [ieee802_11_parse_mac_0, out, blocks_message_debug_0, print]
 - [ieee802_11_parse_mac_0, out, foo_wireshark_connector_0, in]
 - [ieee802_11_sync_long_0, '0', blocks_stream_to_vector_1, '0']
 - [ieee802_11_sync_short_0, '0', blocks_delay_0_0, '0']
 - [ieee802_11_sync_short_0, '0', ieee802_11_sync_long_0, '0']
+- [iio_pluto_source_0, '0', blocks_complex_to_mag_squared_0, '0']
+- [iio_pluto_source_0, '0', blocks_delay_0, '0']
+- [iio_pluto_source_0, '0', blocks_multiply_xx_0, '1']
+- [iio_pluto_source_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [pdu_pdu_to_tagged_stream_0, '0', qtgui_const_sink_x_0, '0']
 
 metadata:
