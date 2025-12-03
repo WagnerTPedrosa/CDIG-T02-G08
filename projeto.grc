@@ -272,7 +272,7 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: /home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/data.pcap
+    file: "/Users/wagner/Desktop/FEUP/4\xBA Ano/CDIG/CDIG-T02-G08/data.pcap"
     type: byte
     unbuffered: 'False'
     vlen: '1'
@@ -290,7 +290,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/Wifi_Project_Baseband_recordings/Wifi_Project_Baseband_recordings/Sample1_20MHz_Channel36.bin
+    file: "/Users/wagner/Desktop/FEUP/4\xBA Ano/CDIG/CDIG-T02-G08/Wifi_Project_Baseband_recordings/Sample1_20MHz_Channel36.bin"
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
