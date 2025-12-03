@@ -70,8 +70,9 @@ class projeto(gr.top_block, Qt.QWidget):
         ##################################################
         self.window_size = window_size = 48
         self.threshold = threshold = 0.56
+        self.scan_interval = scan_interval = 5
         self.samp_rate = samp_rate = 20000000
-        self.freq = freq = 5.18e9
+        self.freq = freq = 5.22e9
         self.chan_est = chan_est = 0
         self.PlutoSDR_gain = PlutoSDR_gain = 50
 
@@ -83,30 +84,21 @@ class projeto(gr.top_block, Qt.QWidget):
         self._threshold_win = qtgui.RangeWidget(self._threshold_range, self.set_threshold, "Sync Short Threshold", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._threshold_win)
         # Create the options list
-        self._freq_options = [5180000000.0, 5200000000.0, 5220000000.0, 5240000000.0, 5745000000.0]
+        self._freq_options = [5180000000.0, 5200000000.0, 5220000000.0, 5240000000.0, 5260000000.0, 5280000000.0, 5300000000.0, 5320000000.0, 5745000000.0, 5765000000.0, 5785000000.0, 5805000000.0]
         # Create the labels list
-        self._freq_labels = ['ch 36 (5.18 GHz)', 'Ch 40 (5.20 GHz)', 'Ch 44 (5.22 GHz)', 'Ch 48 (5.24 GHz)', 'Ch 149 (5.745 GHz)']
+        self._freq_labels = ['Ch 36 (5.18 GHz)', 'Ch 40 (5.20 GHz)', 'Ch 44 (5.22 GHz)', 'Ch 48 (5.24 GHz)', 'Ch 52 (5.26 GHz)', 'Ch 56 (5.28 GHz)', 'Ch 60 (5.30 GHz)', 'Ch 64 (5.32 GHz)', 'Ch 149 (5.745 GHz)', 'Ch 153 (5.765 GHz)', 'Ch 157 (5.785 GHz)', 'Ch 161 (5.805 GHz)']
         # Create the combo box
-        # Create the radio buttons
-        self._freq_group_box = Qt.QGroupBox("WiFi Frame Equalizer Frequency" + ": ")
-        self._freq_box = Qt.QHBoxLayout()
-        class variable_chooser_button_group(Qt.QButtonGroup):
-            def __init__(self, parent=None):
-                Qt.QButtonGroup.__init__(self, parent)
-            @pyqtSlot(int)
-            def updateButtonChecked(self, button_id):
-                self.button(button_id).setChecked(True)
-        self._freq_button_group = variable_chooser_button_group()
-        self._freq_group_box.setLayout(self._freq_box)
-        for i, _label in enumerate(self._freq_labels):
-            radio_button = Qt.QRadioButton(_label)
-            self._freq_box.addWidget(radio_button)
-            self._freq_button_group.addButton(radio_button, i)
-        self._freq_callback = lambda i: Qt.QMetaObject.invokeMethod(self._freq_button_group, "updateButtonChecked", Qt.Q_ARG("int", self._freq_options.index(i)))
+        self._freq_tool_bar = Qt.QToolBar(self)
+        self._freq_tool_bar.addWidget(Qt.QLabel("WiFi Channel" + ": "))
+        self._freq_combo_box = Qt.QComboBox()
+        self._freq_tool_bar.addWidget(self._freq_combo_box)
+        for _label in self._freq_labels: self._freq_combo_box.addItem(_label)
+        self._freq_callback = lambda i: Qt.QMetaObject.invokeMethod(self._freq_combo_box, "setCurrentIndex", Qt.Q_ARG("int", self._freq_options.index(i)))
         self._freq_callback(self.freq)
-        self._freq_button_group.buttonClicked[int].connect(
+        self._freq_combo_box.currentIndexChanged.connect(
             lambda i: self.set_freq(self._freq_options[i]))
-        self.top_grid_layout.addWidget(self._freq_group_box, 0, 1, 1, 1)
+        # Create the radio buttons
+        self.top_grid_layout.addWidget(self._freq_tool_bar, 0, 1, 1, 1)
         for r in range(0, 1):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(1, 2):
@@ -217,6 +209,12 @@ class projeto(gr.top_block, Qt.QWidget):
 
     def set_threshold(self, threshold):
         self.threshold = threshold
+
+    def get_scan_interval(self):
+        return self.scan_interval
+
+    def set_scan_interval(self, scan_interval):
+        self.scan_interval = scan_interval
 
     def get_samp_rate(self):
         return self.samp_rate

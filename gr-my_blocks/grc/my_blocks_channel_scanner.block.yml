@@ -1,0 +1,38 @@
+id: my_blocks_channel_scanner
+label: WiFi Channel Scanner
+category: '[CDIG]/WiFi'
+
+templates:
+  imports: from gnuradio import my_blocks
+  make: my_blocks.channel_scanner(scan_interval=${scan_interval})
+  callbacks:
+  - set_scan_interval(${scan_interval})
+
+parameters:
+- id: scan_interval
+  label: Scan Interval (seconds)
+  dtype: int
+  default: '5'
+  hide: none
+
+inputs:
+- label: ssid_in
+  domain: message
+  dtype: message
+  optional: false
+
+documentation: |-
+  WiFi Channel Scanner
+  
+  Automatically scans through 5 GHz WiFi channels (36-161) and detects SSIDs from beacon frames.
+  
+  Parameters:
+    - scan_interval: Time in seconds to spend on each channel (default: 5)
+  
+  Message Ports:
+    - ssid_in: Receives parsed MAC frames from ieee802_11_parse_mac
+  
+  The scanner will automatically change the flowgraph frequency every scan_interval seconds,
+  cycling through all configured channels and printing detected SSIDs.
+
+file_format: 1

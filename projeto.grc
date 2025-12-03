@@ -89,25 +89,28 @@ blocks:
   parameters:
     comment: ''
     gui_hint: 0,1,1,1
-    label: WiFi Frame Equalizer Frequency
-    label0: ch 36 (5.18 GHz)
-    label1: Ch 40 (5.20 GHz)
-    label2: Ch 44 (5.22 GHz)
-    label3: Ch 48 (5.24 GHz)
-    label4: Ch 149 (5.745 GHz)
-    labels: '["BPSK 1/2", "BPSK 3/4", "QPSK 1/2", "QPSK 3/4", "16QAM 1/2", "16QAM
-      3/4", "64QAM 2/3", "64QAM 3/4"]'
-    num_opts: '5'
-    option0: 5.18e9
-    option1: 5.20e9
-    option2: 5.22e9
-    option3: 5.24e9
-    option4: 5.745e9
-    options: '[0, 1, 2, 3, 4, 5, 6, 7]'
-    orient: Qt.QHBoxLayout
-    type: raw
-    value: 5.18e9
-    widget: radio_buttons
+    label: WiFi Channel
+    label0: ''
+    label1: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '["Ch 36 (5.18 GHz)", "Ch 40 (5.20 GHz)", "Ch 44 (5.22 GHz)", "Ch 48 (5.24
+      GHz)", "Ch 52 (5.26 GHz)", "Ch 56 (5.28 GHz)", "Ch 60 (5.30 GHz)", "Ch 64 (5.32
+      GHz)", "Ch 149 (5.745 GHz)", "Ch 153 (5.765 GHz)", "Ch 157 (5.785 GHz)", "Ch
+      161 (5.805 GHz)"]'
+    num_opts: '0'
+    option0: '0'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[5.18e9, 5.20e9, 5.22e9, 5.24e9, 5.26e9, 5.28e9, 5.30e9, 5.32e9, 5.745e9,
+      5.765e9, 5.785e9, 5.805e9]'
+    orient: Qt.QVBoxLayout
+    type: real
+    value: 5.22e9
+    widget: combo_box
   states:
     bus_sink: false
     bus_source: false
@@ -125,6 +128,18 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [120, 248.0]
+    rotation: 0
+    state: enabled
+- name: scan_interval
+  id: variable
+  parameters:
+    comment: ''
+    value: '5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [480, 16.0]
     rotation: 0
     state: enabled
 - name: threshold
@@ -157,7 +172,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 248.0]
+    coordinate: [360, 16.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_0
@@ -374,9 +389,23 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [312, 48.0]
+    coordinate: [336, 88.0]
     rotation: 0
     state: enabled
+- name: channel_scanner_0
+  id: my_blocks_channel_scanner
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    scan_interval: scan_interval
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1048, 648.0]
+    rotation: 0
+    state: disabled
 - name: fft_vxx_0
   id: fft_vxx
   parameters:
@@ -572,7 +601,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [224, 196.0]
+    coordinate: [296, 172.0]
     rotation: 0
     state: disabled
 - name: pdu_pdu_to_tagged_stream_0
@@ -867,6 +896,7 @@ connections:
 - [ieee802_11_frame_equalizer_0, '0', ieee802_11_decode_mac_0, '0']
 - [ieee802_11_frame_equalizer_0, symbols, pdu_pdu_to_tagged_stream_0, pdus]
 - [ieee802_11_parse_mac_0, out, blocks_message_debug_0, print]
+- [ieee802_11_parse_mac_0, out, channel_scanner_0, ssid_in]
 - [ieee802_11_parse_mac_0, out, foo_wireshark_connector_0, in]
 - [ieee802_11_sync_long_0, '0', blocks_stream_to_vector_1, '0']
 - [ieee802_11_sync_short_0, '0', blocks_delay_0_0, '0']
