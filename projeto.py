@@ -32,10 +32,12 @@ import threading
 
 
 def snipfcn_snippet_0(self):
+    ### Sweep python code
+
     from PyQt5 import QtCore
+    from PyQt5.QtWidgets import QPushButton, QLabel
 
     # Channel sweep setup
-    '''
     channels = [
         2412000000, 2417000000, 2422000000, 2427000000, 2432000000, 2437000000,
         2442000000, 2447000000, 2452000000, 2457000000, 2462000000, 2467000000,
@@ -46,73 +48,105 @@ def snipfcn_snippet_0(self):
         5720000000, 5745000000, 5765000000, 5785000000, 5805000000, 5825000000,
         5845000000, 5865000000, 5885000000
     ]
-    '''
-    channels = [
-        2437000000,5180000000,5500000000
-    ]
     channel_index = [0]
-    sweep_active = [True]  # Flag para controlar se sweep está ativo
-    tb = self  # Captura referência do top_block
-    time = 120000
-    
-    # Guardar o set_freq original
+    sweep_active = [True]
+    tb = self
+    time = 10000
+
+    # Create status label
+    status_label = QLabel(" SWEEP MODE - Scanning all channels...")
+    status_label.setStyleSheet("QLabel { background-color: #4CAF50; color: white; padding: 10px; font-weight: bold; font-size: 14px; }")
+    tb.top_layout.addWidget(status_label)
+
+    # Save original set_freq
     original_set_freq = tb.set_freq
-    
+
+    def update_status_label():
+        if sweep_active[0]:
+            status_label.setText(" SWEEP MODE - Scanning all channels...")
+            status_label.setStyleSheet("QLabel { background-color: #4CAF50; color: white; padding: 10px; font-weight: bold; font-size: 14px; }")
+        else:
+            status_label.setText(" MANUAL MODE - Fixed channel selected")
+            status_label.setStyleSheet("QLabel { background-color: #FF9800; color: white; padding: 10px; font-weight: bold; font-size: 14px; }")
+
     def custom_set_freq(freq):
-        # Detecta mudança manual e pausa o sweep
-        if sweep_active[0] and freq not in channels:
+        if sweep_active[0]:
             sweep_active[0] = False
             tb._sweep_timer.stop()
-            print(f"[SWEEP] Pausado! Mudança manual para {freq/1e9:.3f} GHz detectada.")
-            print("[SWEEP] Clique no botão 'Resume Sweep' para retomar.")
-        elif sweep_active[0] and freq in channels:
-            # Mudança manual para um canal da lista - pausa também
-            sweep_active[0] = False
-            tb._sweep_timer.stop()
-            print(f"[SWEEP] Pausado! Mudança manual detectada.")
-            print("[SWEEP] Clique no botão 'Resume Sweep' para retomar.")
+            update_status_label()
+            print(f"[SWEEP] Paused! Manual change detected.")
+            print("[SWEEP] Click 'Resume Sweep' button to continue.")
         original_set_freq(freq)
-    
-    # Substituir set_freq pela versão customizada
+
     tb.set_freq = custom_set_freq
 
     def sweep_channel():
         if sweep_active[0]:
             try:
-                print(f"[SWEEP] Mudando para canal {channel_index[0]+1}/{len(channels)}...")
-                original_set_freq(channels[channel_index[0]])  # Usa o original para não pausar
-                print(f"[SWEEP] Agora em: {channels[channel_index[0]]/1e9:.3f} GHz")
+                print(f"[SWEEP] Switching to channel {channel_index[0]+1}/{len(channels)}...")
+                original_set_freq(channels[channel_index[0]])
+                print(f"[SWEEP] Now at: {channels[channel_index[0]]/1e9:.3f} GHz")
                 channel_index[0] = (channel_index[0] + 1) % len(channels)
             except Exception as e:
-                print(f"[SWEEP] ERRO: {e}")
-    
+                print(f"[SWEEP] ERROR: {e}")
+
     def resume_sweep():
         if not sweep_active[0]:
             sweep_active[0] = True
             tb._sweep_timer.start(time)
-            print(f"[SWEEP] Resumido! Continuando sweep a partir do canal {channel_index[0]+1}/{len(channels)}.")
+            update_status_label()
+            print(f"[SWEEP] Resumed! Continuing sweep from channel {channel_index[0]+1}/{len(channels)}.")
         else:
-            print("[SWEEP] Sweep já está ativo!")
-    
-    # Criar botão Resume Sweep
-    from PyQt5.QtWidgets import QPushButton
+            print("[SWEEP] Sweep is already active!")
+
     resume_button = QPushButton("Resume Sweep")
     resume_button.clicked.connect(resume_sweep)
     tb.top_layout.addWidget(resume_button)
 
-    print("[SWEEP] Iniciando sweep automático de canais WiFi...")
-    print(f"[SWEEP] Canal inicial: {tb.freq / 1e9:.3f} GHz")
-    print("[SWEEP] Use o dropdown para pausar ou o botão 'Resume Sweep' para retomar.")
-    # Criar timer e guardar como atributo do top_block para não ser coletado
+    print("[SWEEP] Starting automatic WiFi channel sweep...")
+    print(f"[SWEEP] Initial channel: {tb.freq / 1e9:.3f} GHz")
+    print("[SWEEP] Use dropdown to pause or 'Resume Sweep' button to continue.")
     tb._sweep_timer = QtCore.QTimer(tb)
     tb._sweep_timer.timeout.connect(sweep_channel)
     tb._sweep_timer.start(time)
-    print(f"[SWEEP] Timer iniciado! Mudando de canal a cada {time / 1000} segundos...")
+    print(f"[SWEEP] Timer started! Changing channel every {time / 1000} seconds...")
 
+def snipfcn_snippet_0_0(self):
+    # Snippet for wireshark
+
+    import os
+    import subprocess
+    import time
+
+    # Path to the pipe
+    pipe_path = '/tmp/gnuradio_wireshark.fifo'
+
+    # Remove old pipe if exists
+    if os.path.exists(pipe_path):
+        os.remove(pipe_path)
+
+    # Create named pipe
+    os.mkfifo(pipe_path)
+    print(f"[WIRESHARK] Pipe created: {pipe_path}")
+
+    # Launch Wireshark in background
+    try:
+        subprocess.Popen(['wireshark', '-k', '-i', pipe_path],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL)
+        print("[WIRESHARK] Wireshark launched! Wait for window to open...")
+        time.sleep(2)  # Give Wireshark time to start
+    except FileNotFoundError:
+        print("[WIRESHARK] ERROR: Wireshark not found! Install with: sudo apt install wireshark")
+    except Exception as e:
+        print(f"[WIRESHARK] ERROR launching: {e}")
 
 
 def snippets_main_after_init(tb):
     snipfcn_snippet_0(tb)
+
+def snippets_init_before_blocks(tb):
+    snipfcn_snippet_0_0(tb)
 
 class projeto(gr.top_block, Qt.QWidget):
 
@@ -159,7 +193,7 @@ class projeto(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-
+        snippets_init_before_blocks(self)
         self._threshold_range = qtgui.Range(0.1, 0.99, 0.01, 0.8, 200)
         self._threshold_win = qtgui.RangeWidget(self._threshold_range, self.set_threshold, "Sync Short Threshold", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._threshold_win)
@@ -232,7 +266,7 @@ class projeto(gr.top_block, Qt.QWidget):
         self.epy_block_1 = epy_block_1.wifi_info_printer()
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, 64)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/wireshark.pcap', False)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/tmp/gnuradio_wireshark.fifo', False)
         self.blocks_file_sink_0.set_unbuffered(True)
         self.blocks_divide_xx_0 = blocks.divide_ff(1)
         self.blocks_delay_0_0 = blocks.delay(gr.sizeof_gr_complex*1, 240)

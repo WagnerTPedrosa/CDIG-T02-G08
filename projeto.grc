@@ -28,7 +28,7 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 136.0]
+    coordinate: [8, 16.0]
     rotation: 0
     state: enabled
 
@@ -60,7 +60,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 576.0]
+    coordinate: [728, 8.0]
     rotation: 0
     state: enabled
 - name: freq
@@ -106,7 +106,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 224.0]
+    coordinate: [176, 8.0]
     rotation: 0
     state: enabled
 - name: samp_rate
@@ -118,7 +118,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 368.0]
+    coordinate: [352, 8.0]
     rotation: 0
     state: enabled
 - name: threshold
@@ -139,7 +139,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 440.0]
+    coordinate: [560, 8.0]
     rotation: 0
     state: enabled
 - name: window_size
@@ -151,7 +151,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [96, 368.0]
+    coordinate: [440, 8.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_0
@@ -167,7 +167,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1480, 128.0]
+    coordinate: [1520, 288.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_squared_0
@@ -183,7 +183,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [816, 256.0]
+    coordinate: [856, 416.0]
     rotation: 0
     state: enabled
 - name: blocks_conjugate_cc_0
@@ -198,7 +198,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [816, 104.0]
+    coordinate: [856, 264.0]
     rotation: 0
     state: enabled
 - name: blocks_delay_0
@@ -218,7 +218,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 16.0]
+    coordinate: [752, 176.0]
     rotation: 0
     state: enabled
 - name: blocks_delay_0_0
@@ -238,7 +238,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1272, 368.0]
+    coordinate: [1312, 528.0]
     rotation: 180
     state: enabled
 - name: blocks_divide_xx_0
@@ -256,7 +256,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1680, 128.0]
+    coordinate: [1720, 288.0]
     rotation: 0
     state: enabled
 - name: blocks_file_sink_0
@@ -266,7 +266,7 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: /home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/wireshark.pcap
+    file: /tmp/gnuradio_wireshark.fifo
     type: byte
     unbuffered: 'True'
     vlen: '1'
@@ -274,7 +274,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1536, 496.0]
+    coordinate: [1576, 656.0]
     rotation: 0
     state: enabled
 - name: blocks_file_source_0
@@ -296,7 +296,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [0, 16.0]
+    coordinate: [40, 176.0]
     rotation: 0
     state: disabled
 - name: blocks_multiply_xx_0
@@ -314,7 +314,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1016, 112.0]
+    coordinate: [1056, 272.0]
     rotation: 0
     state: enabled
 - name: blocks_stream_to_vector_1
@@ -332,7 +332,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [800, 360.0]
+    coordinate: [840, 520.0]
     rotation: 180
     state: enabled
 - name: blocks_throttle2_0
@@ -353,7 +353,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [336, 88.0]
+    coordinate: [376, 248.0]
     rotation: 0
     state: disabled
 - name: epy_block_1
@@ -377,11 +377,14 @@ blocks:
       \ self.handle_msg)\n    \n    def handle_msg(self, msg):\n        try:\n   \
       \         meta = pmt.car(msg)\n            ssid = pmt.dict_ref(meta, pmt.intern('ssid'),\
       \ pmt.PMT_NIL)\n            freq = pmt.dict_ref(meta, pmt.intern('nominal frequency'),\
-      \ pmt.PMT_NIL)\n            \n            if not pmt.is_null(ssid) and not pmt.is_null(freq):\n\
-      \                ssid_str = pmt.symbol_to_string(ssid)\n                freq_val\
-      \ = pmt.to_double(freq)\n                channel = self.freq_to_channel(freq_val)\n\
-      \                print(f\"SSID: {ssid_str}  |  Channel: {channel} ({freq_val/1e9:.2f}\
-      \ GHz)\")\n        except Exception as e:\n            pass\n    \n    def freq_to_channel(self,\
+      \ pmt.PMT_NIL)\n            \n            if not pmt.is_null(ssid):\n      \
+      \          ssid_str = pmt.symbol_to_string(ssid)\n                \n       \
+      \         if not pmt.is_null(freq):\n                    freq_val = pmt.to_double(freq)\n\
+      \                    channel = self.freq_to_channel(freq_val)\n            \
+      \        print(f\"SSID: {ssid_str}  |  Channel: {channel} ({freq_val/1e9:.2f}\
+      \ GHz)\")\n                else:\n                    print(f\"SSID: {ssid_str}\
+      \  |  Channel: N/A\")\n        except Exception as e:\n            print(f\"\
+      [WiFi Info] Erro ao processar mensagem: {e}\")\n    \n    def freq_to_channel(self,\
       \ freq_hz):\n        # 5 GHz band channels\n        if 5000e6 < freq_hz < 6000e6:\n\
       \            channel = int((freq_hz - 5000e6) / 5e6)\n            return channel\n\
       \        # 2.4 GHz band channels\n        elif 2400e6 < freq_hz < 2500e6:\n\
@@ -398,7 +401,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1360, 648.0]
+    coordinate: [1352, 752.0]
     rotation: 0
     state: enabled
 - name: fft_vxx_0
@@ -419,7 +422,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [496, 352.0]
+    coordinate: [536, 512.0]
     rotation: 180
     state: enabled
 - name: fir_filter_xxx_0
@@ -438,7 +441,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1192, 112.0]
+    coordinate: [1232, 272.0]
     rotation: 0
     state: enabled
 - name: fir_filter_xxx_0_0
@@ -457,7 +460,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1112, 232.0]
+    coordinate: [1152, 392.0]
     rotation: 0
     state: enabled
 - name: foo_wireshark_connector_0
@@ -474,7 +477,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1288, 504.0]
+    coordinate: [1328, 664.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_decode_mac_0
@@ -491,7 +494,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [840, 504.0]
+    coordinate: [880, 664.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_frame_equalizer_0
@@ -511,7 +514,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [496, 504.0]
+    coordinate: [536, 664.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_parse_mac_0
@@ -528,7 +531,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1088, 504.0]
+    coordinate: [1128, 664.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_sync_long_0
@@ -546,7 +549,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1008, 336.0]
+    coordinate: [1048, 496.0]
     rotation: 180
     state: enabled
 - name: ieee802_11_sync_short_0
@@ -565,7 +568,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1656, 320.0]
+    coordinate: [1696, 480.0]
     rotation: 180
     state: enabled
 - name: iio_pluto_source_0
@@ -596,14 +599,15 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [296, 172.0]
+    coordinate: [336, 332.0]
     rotation: 0
     state: enabled
 - name: snippet_0
   id: snippet
   parameters:
     alias: ''
-    code: "from PyQt5 import QtCore\n\n# Channel sweep setup\nchannels = [\n    2412000000,\
+    code: "### Sweep python code\n\nfrom PyQt5 import QtCore\nfrom PyQt5.QtWidgets\
+      \ import QPushButton, QLabel\n\n# Channel sweep setup\nchannels = [\n    2412000000,\
       \ 2417000000, 2422000000, 2427000000, 2432000000, 2437000000,\n    2442000000,\
       \ 2447000000, 2452000000, 2457000000, 2462000000, 2467000000,\n    2472000000,\
       \ 2484000000, 5160000000, 5180000000, 5200000000, 5220000000,\n    5240000000,\
@@ -611,17 +615,39 @@ blocks:
       \ 5500000000, 5520000000, 5540000000, 5560000000, 5580000000,\n    5600000000,\
       \ 5620000000, 5640000000, 5660000000, 5680000000, 5700000000,\n    5720000000,\
       \ 5745000000, 5765000000, 5785000000, 5805000000, 5825000000,\n    5845000000,\
-      \ 5865000000, 5885000000\n]\nchannel_index = [0]\ntb = self  # Captura refer\xEA\
-      ncia do top_block\n\ndef sweep_channel():\n    try:\n        print(f\"[SWEEP]\
-      \ Mudando para canal {channel_index[0]+1}/{len(channels)}...\")\n        tb.set_freq(channels[channel_index[0]])\n\
-      \        print(f\"[SWEEP] Agora em: {channels[channel_index[0]]/1e9:.3f} GHz\"\
-      )\n        channel_index[0] = (channel_index[0] + 1) % len(channels)\n    except\
-      \ Exception as e:\n        print(f\"[SWEEP] ERRO: {e}\")\n\nprint(\"[SWEEP]\
-      \ Iniciando sweep autom\xE1tico de canais WiFi...\")\n\n# Criar timer e guardar\
-      \ como atributo do top_block para n\xE3o ser coletado\nself._sweep_timer = QtCore.QTimer(self)\n\
-      self._sweep_timer.timeout.connect(sweep_channel)\nself._sweep_timer.start(10000)\
-      \  # 10000ms = 10 segundos\nprint(\"[SWEEP] Timer iniciado! Mudando de canal\
-      \ a cada 10 segundos...\")"
+      \ 5865000000, 5885000000\n]\nchannel_index = [0]\nsweep_active = [True]\ntb\
+      \ = self\ntime = 10000\n\n# Create status label\nstatus_label = QLabel(\" SWEEP\
+      \ MODE - Scanning all channels...\")\nstatus_label.setStyleSheet(\"QLabel {\
+      \ background-color: #4CAF50; color: white; padding: 10px; font-weight: bold;\
+      \ font-size: 14px; }\")\ntb.top_layout.addWidget(status_label)\n\n# Save original\
+      \ set_freq\noriginal_set_freq = tb.set_freq\n\ndef update_status_label():\n\
+      \    if sweep_active[0]:\n        status_label.setText(\" SWEEP MODE - Scanning\
+      \ all channels...\")\n        status_label.setStyleSheet(\"QLabel { background-color:\
+      \ #4CAF50; color: white; padding: 10px; font-weight: bold; font-size: 14px;\
+      \ }\")\n    else:\n        status_label.setText(\" MANUAL MODE - Fixed channel\
+      \ selected\")\n        status_label.setStyleSheet(\"QLabel { background-color:\
+      \ #FF9800; color: white; padding: 10px; font-weight: bold; font-size: 14px;\
+      \ }\")\n\ndef custom_set_freq(freq):\n    if sweep_active[0]:\n        sweep_active[0]\
+      \ = False\n        tb._sweep_timer.stop()\n        update_status_label()\n \
+      \       print(f\"[SWEEP] Paused! Manual change detected.\")\n        print(\"\
+      [SWEEP] Click 'Resume Sweep' button to continue.\")\n    original_set_freq(freq)\n\
+      \ntb.set_freq = custom_set_freq\n\ndef sweep_channel():\n    if sweep_active[0]:\n\
+      \        try:\n            print(f\"[SWEEP] Switching to channel {channel_index[0]+1}/{len(channels)}...\"\
+      )\n            original_set_freq(channels[channel_index[0]])\n            print(f\"\
+      [SWEEP] Now at: {channels[channel_index[0]]/1e9:.3f} GHz\")\n            channel_index[0]\
+      \ = (channel_index[0] + 1) % len(channels)\n        except Exception as e:\n\
+      \            print(f\"[SWEEP] ERROR: {e}\")\n\ndef resume_sweep():\n    if not\
+      \ sweep_active[0]:\n        sweep_active[0] = True\n        tb._sweep_timer.start(time)\n\
+      \        update_status_label()\n        print(f\"[SWEEP] Resumed! Continuing\
+      \ sweep from channel {channel_index[0]+1}/{len(channels)}.\")\n    else:\n \
+      \       print(\"[SWEEP] Sweep is already active!\")\n\nresume_button = QPushButton(\"\
+      Resume Sweep\")\nresume_button.clicked.connect(resume_sweep)\ntb.top_layout.addWidget(resume_button)\n\
+      \nprint(\"[SWEEP] Starting automatic WiFi channel sweep...\")\nprint(f\"[SWEEP]\
+      \ Initial channel: {tb.freq / 1e9:.3f} GHz\")\nprint(\"[SWEEP] Use dropdown\
+      \ to pause or 'Resume Sweep' button to continue.\")\ntb._sweep_timer = QtCore.QTimer(tb)\n\
+      tb._sweep_timer.timeout.connect(sweep_channel)\ntb._sweep_timer.start(time)\n\
+      print(f\"[SWEEP] Timer started! Changing channel every {time / 1000} seconds...\"\
+      )"
     comment: ''
     priority: '0'
     section: main_after_init
@@ -629,7 +655,32 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [368, 656.0]
+    coordinate: [992, 8.0]
+    rotation: 0
+    state: enabled
+- name: snippet_0_0
+  id: snippet
+  parameters:
+    alias: ''
+    code: "# Snippet for wireshark\n\nimport os\nimport subprocess\nimport time\n\n\
+      # Path to the pipe\npipe_path = '/tmp/gnuradio_wireshark.fifo'\n\n# Remove old\
+      \ pipe if exists\nif os.path.exists(pipe_path):\n    os.remove(pipe_path)\n\n\
+      # Create named pipe\nos.mkfifo(pipe_path)\nprint(f\"[WIRESHARK] Pipe created:\
+      \ {pipe_path}\")\n\n# Launch Wireshark in background\ntry:\n    subprocess.Popen(['wireshark',\
+      \ '-k', '-i', pipe_path], \n                    stdout=subprocess.DEVNULL, \n\
+      \                    stderr=subprocess.DEVNULL)\n    print(\"[WIRESHARK] Wireshark\
+      \ launched! Wait for window to open...\")\n    time.sleep(2)  # Give Wireshark\
+      \ time to start\nexcept FileNotFoundError:\n    print(\"[WIRESHARK] ERROR: Wireshark\
+      \ not found! Install with: sudo apt install wireshark\")\nexcept Exception as\
+      \ e:\n    print(f\"[WIRESHARK] ERROR launching: {e}\")"
+    comment: ''
+    priority: '0'
+    section: init_before_blocks
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1216, 8.0]
     rotation: 0
     state: enabled
 
