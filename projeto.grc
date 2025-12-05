@@ -21,10 +21,6 @@ options:
     run_command: '{python} -u {filename}'
     run_options: prompt
     sizing_mode: fixed
-    snippets:
-      after_init: |-
-        self.epy_block_0.pluto_source = self.iio_pluto_source_0
-        self.epy_block_0.set_top_block(self)
     thread_safe_setters: ''
     title: Not titled yet
     window_size: (1000,1000)
@@ -37,27 +33,6 @@ options:
     state: enabled
 
 blocks:
-- name: PlutoSDR_gain
-  id: variable_qtgui_range
-  parameters:
-    comment: ''
-    gui_hint: ''
-    label: ''
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '1'
-    stop: '100'
-    value: '35'
-    widget: counter_slider
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [200, 448.0]
-    rotation: 0
-    state: enabled
 - name: algorithm
   id: variable_qtgui_chooser
   parameters:
@@ -69,7 +44,7 @@ blocks:
     label2: ''
     label3: ''
     label4: ''
-    labels: '["LS", "LMS", "Linear Comb", "STA"]'
+    labels: '["ieee802_11.LS", "ieee802_11.LMS", "ieee802_11.Linear Comb", "ieee802_11.STA"]'
     num_opts: '0'
     option0: '0'
     option1: '1'
@@ -85,7 +60,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [40, 576.0]
+    coordinate: [8, 576.0]
     rotation: 0
     state: enabled
 - name: freq
@@ -116,17 +91,16 @@ blocks:
     option2: '2'
     option3: '3'
     option4: '4'
-    options: '[2412000000.0, 2417000000.0, 2422000000.0, 2427000000.0, 2432000000.0,
-      2437000000.0, 2442000000.0, 2447000000.0, 2452000000.0, 2457000000.0, 2462000000.0,
-      2467000000.0, 2472000000.0, 2484000000.0, 5160000000.0, 5180000000.0, 5200000000.0,
-      5220000000.0, 5240000000.0, 5260000000.0, 5280000000.0, 5300000000.0, 5320000000.0,
-      5340000000.0, 5480000000.0, 5500000000.0, 5520000000.0, 5540000000.0, 5560000000.0,
-      5580000000.0, 5600000000.0, 5620000000.0, 5640000000.0, 5660000000.0, 5680000000.0,
-      5700000000.0, 5720000000.0, 5745000000.0, 5765000000.0, 5785000000.0, 5805000000.0,
-      5825000000.0, 5845000000.0, 5865000000.0, 5885000000.0]'
+    options: '[2412000000, 2417000000, 2422000000, 2427000000, 2432000000, 2437000000,
+      2442000000, 2447000000, 2452000000, 2457000000, 2462000000, 2467000000, 2472000000,
+      2484000000, 5160000000, 5180000000, 5200000000, 5220000000, 5240000000, 5260000000,
+      5280000000, 5300000000, 5320000000, 5340000000, 5480000000, 5500000000, 5520000000,
+      5540000000, 5560000000, 5580000000, 5600000000, 5620000000, 5640000000, 5660000000,
+      5680000000, 5700000000, 5720000000, 5745000000, 5765000000, 5785000000, 5805000000,
+      5825000000, 5845000000, 5865000000, 5885000000]'
     orient: Qt.QVBoxLayout
-    type: real
-    value: 2.437e9
+    type: int
+    value: '2412000000'
     widget: combo_box
   states:
     bus_sink: false
@@ -159,7 +133,7 @@ blocks:
     start: '0.1'
     step: '0.01'
     stop: '0.99'
-    value: '0.56'
+    value: '0.8'
     widget: counter_slider
   states:
     bus_sink: false
@@ -291,8 +265,8 @@ blocks:
     affinity: ''
     alias: ''
     append: 'False'
-    comment: 'Wireshark live: wireshark /tmp/wifi_live.pcap'
-    file: /home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/data.pcap
+    comment: ''
+    file: /home/wagner/Desktop/MEEC/CDIG/CDIG-T02-G08/data.pcap
     type: byte
     unbuffered: 'True'
     vlen: '1'
@@ -503,7 +477,7 @@ blocks:
     bus_structure: null
     coordinate: [464, 696.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: epy_block_1
   id: epy_block
   parameters:
@@ -614,7 +588,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    debug: 'True'
+    debug: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
     tech: '127'
@@ -632,7 +606,7 @@ blocks:
     alias: ''
     comment: ''
     debug: 'False'
-    log: 'False'
+    log: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
   states:
@@ -669,7 +643,7 @@ blocks:
     alias: ''
     comment: ''
     debug: 'False'
-    log: 'False'
+    log: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
   states:
@@ -722,24 +696,24 @@ blocks:
     affinity: ''
     alias: ''
     bandwidth: '20000000'
-    bbdc: 'False'
-    buffer_size: '26768'
+    bbdc: 'True'
+    buffer_size: '20000000'
     comment: ''
     filter: ''
     filter_source: '''Auto'''
     fpass: '0'
-    frequency: int(freq)
+    frequency: freq
     fstop: '0'
-    gain1: '''manual'''
+    gain1: '''slow_attack'''
     len_tag_key: packet_len
-    manual_gain1: PlutoSDR_gain
+    manual_gain1: '64'
     maxoutbuf: '0'
     minoutbuf: '0'
     quadrature: 'True'
     rfdc: 'True'
     samplerate: samp_rate
     type: fc32
-    uri: usb:1.4.5
+    uri: ''
   states:
     bus_sink: false
     bus_source: false
@@ -780,4 +754,4 @@ connections:
 
 metadata:
   file_format: 1
-  grc_version: 3.10.12.0
+  grc_version: 3.10.9.2
