@@ -31,6 +31,88 @@ import projeto_epy_block_1 as epy_block_1  # embedded python block
 import threading
 
 
+def snipfcn_snippet_0(self):
+    from PyQt5 import QtCore
+
+    # Channel sweep setup
+    '''
+    channels = [
+        2412000000, 2417000000, 2422000000, 2427000000, 2432000000, 2437000000,
+        2442000000, 2447000000, 2452000000, 2457000000, 2462000000, 2467000000,
+        2472000000, 2484000000, 5160000000, 5180000000, 5200000000, 5220000000,
+        5240000000, 5260000000, 5280000000, 5300000000, 5320000000, 5340000000,
+        5480000000, 5500000000, 5520000000, 5540000000, 5560000000, 5580000000,
+        5600000000, 5620000000, 5640000000, 5660000000, 5680000000, 5700000000,
+        5720000000, 5745000000, 5765000000, 5785000000, 5805000000, 5825000000,
+        5845000000, 5865000000, 5885000000
+    ]
+    '''
+    channels = [
+        2437000000,5180000000,5500000000
+    ]
+    channel_index = [0]
+    sweep_active = [True]  # Flag para controlar se sweep está ativo
+    tb = self  # Captura referência do top_block
+    time = 120000
+    
+    # Guardar o set_freq original
+    original_set_freq = tb.set_freq
+    
+    def custom_set_freq(freq):
+        # Detecta mudança manual e pausa o sweep
+        if sweep_active[0] and freq not in channels:
+            sweep_active[0] = False
+            tb._sweep_timer.stop()
+            print(f"[SWEEP] Pausado! Mudança manual para {freq/1e9:.3f} GHz detectada.")
+            print("[SWEEP] Clique no botão 'Resume Sweep' para retomar.")
+        elif sweep_active[0] and freq in channels:
+            # Mudança manual para um canal da lista - pausa também
+            sweep_active[0] = False
+            tb._sweep_timer.stop()
+            print(f"[SWEEP] Pausado! Mudança manual detectada.")
+            print("[SWEEP] Clique no botão 'Resume Sweep' para retomar.")
+        original_set_freq(freq)
+    
+    # Substituir set_freq pela versão customizada
+    tb.set_freq = custom_set_freq
+
+    def sweep_channel():
+        if sweep_active[0]:
+            try:
+                print(f"[SWEEP] Mudando para canal {channel_index[0]+1}/{len(channels)}...")
+                original_set_freq(channels[channel_index[0]])  # Usa o original para não pausar
+                print(f"[SWEEP] Agora em: {channels[channel_index[0]]/1e9:.3f} GHz")
+                channel_index[0] = (channel_index[0] + 1) % len(channels)
+            except Exception as e:
+                print(f"[SWEEP] ERRO: {e}")
+    
+    def resume_sweep():
+        if not sweep_active[0]:
+            sweep_active[0] = True
+            tb._sweep_timer.start(time)
+            print(f"[SWEEP] Resumido! Continuando sweep a partir do canal {channel_index[0]+1}/{len(channels)}.")
+        else:
+            print("[SWEEP] Sweep já está ativo!")
+    
+    # Criar botão Resume Sweep
+    from PyQt5.QtWidgets import QPushButton
+    resume_button = QPushButton("Resume Sweep")
+    resume_button.clicked.connect(resume_sweep)
+    tb.top_layout.addWidget(resume_button)
+
+    print("[SWEEP] Iniciando sweep automático de canais WiFi...")
+    print(f"[SWEEP] Canal inicial: {tb.freq / 1e9:.3f} GHz")
+    print("[SWEEP] Use o dropdown para pausar ou o botão 'Resume Sweep' para retomar.")
+    # Criar timer e guardar como atributo do top_block para não ser coletado
+    tb._sweep_timer = QtCore.QTimer(tb)
+    tb._sweep_timer.timeout.connect(sweep_channel)
+    tb._sweep_timer.start(time)
+    print(f"[SWEEP] Timer iniciado! Mudando de canal a cada {time / 1000} segundos...")
+
+
+
+def snippets_main_after_init(tb):
+    snipfcn_snippet_0(tb)
 
 class projeto(gr.top_block, Qt.QWidget):
 
@@ -244,7 +326,7 @@ def main(top_block_cls=projeto, options=None):
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
-
+    snippets_main_after_init(tb)
     tb.start()
     tb.flowgraph_started.set()
 

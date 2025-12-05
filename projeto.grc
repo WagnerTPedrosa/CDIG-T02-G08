@@ -356,128 +356,6 @@ blocks:
     coordinate: [336, 88.0]
     rotation: 0
     state: disabled
-- name: epy_block_0
-  id: epy_block
-  parameters:
-    _source_code: "\"\"\"\nEmbedded Python Blocks:\n\nEach time this file is saved,\
-      \ GRC will instantiate the first class it finds\nto get ports and parameters\
-      \ of your block. The arguments to __init__  will\nbe the parameters. All of\
-      \ them are required to have default values!\n\"\"\"\n\nimport numpy as np\n\
-      from gnuradio import gr\nimport time\nimport threading\n\n\nclass blk(gr.sync_block):\n\
-      \    \"\"\"WiFi Channel Sweeper - Varre canais 2.4 GHz e 5 GHz automaticamente\"\
-      \"\"\n\n    def __init__(self, pluto_source=None, interval_seconds=10):\n  \
-      \      \"\"\"\n        pluto_source: Refer\xEAncia ao bloco PlutoSDR Source\n\
-      \        interval_seconds: Tempo em cada canal (default 10s)\n        \"\"\"\
-      \n        gr.sync_block.__init__(\n            self,\n            name='WiFi\
-      \ Channel Sweeper',\n            in_sig=None,\n            out_sig=None\n  \
-      \      )\n        \n        self.pluto_source = pluto_source\n        self.top_block\
-      \ = None  # Ser\xE1 detectado automaticamente\n        self.interval = interval_seconds\n\
-      \        self.running = False\n        self.sweep_thread = None\n        \n\
-      \        # Canais WiFi 2.4 GHz (1-11)\n        self.channels_24ghz = {\n   \
-      \         1: (2.412e9, '2.4GHz'),\n            2: (2.417e9, '2.4GHz'),\n   \
-      \         3: (2.422e9, '2.4GHz'),\n            4: (2.427e9, '2.4GHz'),\n   \
-      \         5: (2.432e9, '2.4GHz'),\n            6: (2.437e9, '2.4GHz'),\n   \
-      \         7: (2.442e9, '2.4GHz'),\n            8: (2.447e9, '2.4GHz'),\n   \
-      \         9: (2.452e9, '2.4GHz'),\n            10: (2.457e9, '2.4GHz'),\n  \
-      \          11: (2.462e9, '2.4GHz'),\n        }\n        \n        # Canais 5\
-      \ GHz mais comuns (802.11a/n/ac)\n        self.channels_5ghz = {\n         \
-      \   36: (5.180e9, '5GHz'),\n            40: (5.200e9, '5GHz'),\n           \
-      \ 44: (5.220e9, '5GHz'),\n            48: (5.240e9, '5GHz'),\n            52:\
-      \ (5.260e9, '5GHz'),\n            56: (5.280e9, '5GHz'),\n            60: (5.300e9,\
-      \ '5GHz'),\n            64: (5.320e9, '5GHz'),\n            149: (5.745e9, '5GHz'),\n\
-      \            153: (5.765e9, '5GHz'),\n            157: (5.785e9, '5GHz'),\n\
-      \            161: (5.805e9, '5GHz'),\n            165: (5.825e9, '5GHz'),\n\
-      \        }\n        \n        # Inicia a thread de detec\xE7\xE3o e sweep com\
-      \ delay\n        if pluto_source:\n            self.sweep_thread = threading.Thread(target=self._init_and_sweep,\
-      \ daemon=True)\n            self.sweep_thread.start()\n    \n    def _init_and_sweep(self):\n\
-      \        \"\"\"Detecta o top_block e inicia o sweep (com delay para inicializa\xE7\
-      \xE3o)\"\"\"\n        # Aguarda 2 segundos para o flowgraph inicializar completamente\n\
-      \        time.sleep(2)\n        \n        # Tenta detectar o top_block\n   \
-      \     try:\n            import inspect\n            frame = inspect.currentframe()\n\
-      \            for _ in range(15):  # Procura nos frames\n                if frame\
-      \ is None:\n                    break\n                if 'self' in frame.f_locals:\n\
-      \                    obj = frame.f_locals['self']\n                    if hasattr(obj,\
-      \ 'set_freq') and hasattr(obj, 'iio_pluto_source_0'):\n                    \
-      \    self.top_block = obj\n                        print(f\"[SWEEP] Top block\
-      \ detectado: {type(obj).__name__}\")\n                        break\n      \
-      \          frame = frame.f_back\n        except Exception as e:\n          \
-      \  print(f\"[SWEEP] Erro ao detectar top_block: {e}\")\n        \n        #\
-      \ Se n\xE3o detectou, tenta obter do parent do pluto_source\n        if self.top_block\
-      \ is None and self.pluto_source:\n            try:\n                # Navega\
-      \ na hierarquia do GNU Radio\n                if hasattr(self.pluto_source,\
-      \ 'to_basic_block'):\n                    basic_block = self.pluto_source.to_basic_block()\n\
-      \                    if hasattr(basic_block, 'detail'):\n                  \
-      \      detail = basic_block.detail()\n                        # Tenta acessar\
-      \ o flowgraph\n                        if hasattr(detail, 'owner'):\n      \
-      \                      parent = detail.owner()\n                           \
-      \ if hasattr(parent, 'set_freq'):\n                                self.top_block\
-      \ = parent\n                                print(f\"[SWEEP] Top block obtido\
-      \ via hierarquia GNU Radio\")\n            except Exception as e:\n        \
-      \        print(f\"[SWEEP] N\xE3o foi poss\xEDvel obter top_block via hierarquia:\
-      \ {e}\")\n        \n        if self.top_block and self.pluto_source:\n     \
-      \       self.start_sweep()\n        else:\n            print(\"[SWEEP ERRO]\
-      \ N\xE3o foi poss\xEDvel detectar o top_block automaticamente\")\n         \
-      \   print(f\"[SWEEP DEBUG] pluto_source={self.pluto_source}, top_block={self.top_block}\"\
-      )\n    \n    def start_sweep(self):\n        \"\"\"Inicia o sweep autom\xE1\
-      tico\"\"\"\n        if not self.running and self.pluto_source and self.top_block:\n\
-      \            self.running = True\n            self.sweep_thread = threading.Thread(target=self._sweep_loop,\
-      \ daemon=True)\n            self.sweep_thread.start()\n            print(\"\
-      [SWEEP] Iniciado - varrendo 2.4 GHz (canais 1-11) e 5 GHz (canais 36-165)\"\
-      )\n    \n    def stop_sweep(self):\n        \"\"\"Para o sweep\"\"\"\n     \
-      \   self.running = False\n        if self.sweep_thread:\n            self.sweep_thread.join(timeout=2)\n\
-      \        print(\"[SWEEP] Parado\")\n    \n    def _sweep_loop(self):\n     \
-      \   \"\"\"Loop principal do sweep\"\"\"\n        while self.running:\n     \
-      \       # Varre canais 2.4 GHz\n            print(f\"\\n{'#'*60}\")\n      \
-      \      print(f\"# Varrendo banda 2.4 GHz (802.11b/g/n)\")\n            print(f\"\
-      {'#'*60}\")\n            \n            for ch in sorted(self.channels_24ghz.keys()):\n\
-      \                if not self.running:\n                    break\n         \
-      \           \n                freq, band = self.channels_24ghz[ch]\n       \
-      \         try:\n                    # Atualizar PlutoSDR\n                 \
-      \   self.pluto_source.set_frequency(int(freq))\n                    # Atualizar\
-      \ vari\xE1vel freq no flowgraph (para o equalizer)\n                    self.top_block.set_freq(freq)\n\
-      \                    \n                    print(f\"\\n{'='*60}\")\n       \
-      \             print(f\"[SWEEP] Canal {ch} ({band}) - {freq/1e9:.3f} GHz\")\n\
-      \                    print(f\"{'='*60}\")\n                    \n          \
-      \          time.sleep(self.interval)\n                    \n               \
-      \ except Exception as e:\n                    print(f\"[SWEEP ERROR] Erro ao\
-      \ mudar para canal {ch}: {e}\")\n            \n            # Varre canais 5\
-      \ GHz\n            if self.running:\n                print(f\"\\n{'#'*60}\"\
-      )\n                print(f\"# Varrendo banda 5 GHz (802.11a/n/ac)\")\n     \
-      \           print(f\"{'#'*60}\")\n                \n                for ch in\
-      \ sorted(self.channels_5ghz.keys()):\n                    if not self.running:\n\
-      \                        break\n                        \n                 \
-      \   freq, band = self.channels_5ghz[ch]\n                    try:\n        \
-      \                # Atualizar PlutoSDR\n                        self.pluto_source.set_frequency(int(freq))\n\
-      \                        # Atualizar vari\xE1vel freq no flowgraph (para o equalizer)\n\
-      \                        self.top_block.set_freq(freq)\n                   \
-      \     \n                        print(f\"\\n{'='*60}\")\n                  \
-      \      print(f\"[SWEEP] Canal {ch} ({band}) - {freq/1e9:.3f} GHz\")\n      \
-      \                  print(f\"{'='*60}\")\n                        \n        \
-      \                time.sleep(self.interval)\n                        \n     \
-      \               except Exception as e:\n                        print(f\"[SWEEP\
-      \ ERROR] Erro ao mudar para canal {ch}: {e}\")\n            \n            if\
-      \ self.running:\n                print(f\"\\n[SWEEP] Ciclo completo (2.4GHz\
-      \ + 5GHz) - reiniciando...\")\n    \n    def stop(self):\n        \"\"\"Cleanup\
-      \ quando o flowgraph para\"\"\"\n        self.stop_sweep()\n        return True\n\
-      \    \n    def work(self, input_items, output_items):\n        \"\"\"N\xE3o\
-      \ processa samples\"\"\"\n        return 0\n"
-    affinity: ''
-    alias: ''
-    comment: ''
-    interval_seconds: '10'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    pluto_source: None
-  states:
-    _io_cache: ('WiFi Channel Sweeper', 'blk', [('pluto_source', 'None'), ('interval_seconds',
-      '10')], [], [], 'WiFi Channel Sweeper - Varre canais 2.4 GHz e 5 GHz automaticamente',
-      ['pluto_source'])
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [464, 696.0]
-    rotation: 0
-    state: disabled
 - name: epy_block_1
   id: epy_block
   parameters:
@@ -719,6 +597,39 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [296, 172.0]
+    rotation: 0
+    state: enabled
+- name: snippet_0
+  id: snippet
+  parameters:
+    alias: ''
+    code: "from PyQt5 import QtCore\n\n# Channel sweep setup\nchannels = [\n    2412000000,\
+      \ 2417000000, 2422000000, 2427000000, 2432000000, 2437000000,\n    2442000000,\
+      \ 2447000000, 2452000000, 2457000000, 2462000000, 2467000000,\n    2472000000,\
+      \ 2484000000, 5160000000, 5180000000, 5200000000, 5220000000,\n    5240000000,\
+      \ 5260000000, 5280000000, 5300000000, 5320000000, 5340000000,\n    5480000000,\
+      \ 5500000000, 5520000000, 5540000000, 5560000000, 5580000000,\n    5600000000,\
+      \ 5620000000, 5640000000, 5660000000, 5680000000, 5700000000,\n    5720000000,\
+      \ 5745000000, 5765000000, 5785000000, 5805000000, 5825000000,\n    5845000000,\
+      \ 5865000000, 5885000000\n]\nchannel_index = [0]\ntb = self  # Captura refer\xEA\
+      ncia do top_block\n\ndef sweep_channel():\n    try:\n        print(f\"[SWEEP]\
+      \ Mudando para canal {channel_index[0]+1}/{len(channels)}...\")\n        tb.set_freq(channels[channel_index[0]])\n\
+      \        print(f\"[SWEEP] Agora em: {channels[channel_index[0]]/1e9:.3f} GHz\"\
+      )\n        channel_index[0] = (channel_index[0] + 1) % len(channels)\n    except\
+      \ Exception as e:\n        print(f\"[SWEEP] ERRO: {e}\")\n\nprint(\"[SWEEP]\
+      \ Iniciando sweep autom\xE1tico de canais WiFi...\")\n\n# Criar timer e guardar\
+      \ como atributo do top_block para n\xE3o ser coletado\nself._sweep_timer = QtCore.QTimer(self)\n\
+      self._sweep_timer.timeout.connect(sweep_channel)\nself._sweep_timer.start(10000)\
+      \  # 10000ms = 10 segundos\nprint(\"[SWEEP] Timer iniciado! Mudando de canal\
+      \ a cada 10 segundos...\")"
+    comment: ''
+    priority: '0'
+    section: main_after_init
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [368, 656.0]
     rotation: 0
     state: enabled
 
