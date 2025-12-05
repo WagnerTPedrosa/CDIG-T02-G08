@@ -1,21 +1,11 @@
 # Build directories
-gr-mywifi/build/
+gr-my_blocks/build/
 **/build/
 **/Build/
 **/BUILD/
 
 # Project specific folders
 Wifi_Project_Baseband_recordings/
-
-# CMake
-CMakeCache.txt
-CMakeFiles/
-CMakeScripts/
-cmake_install.cmake
-Makefile
-install_manifest.txt
-CTestTestfile.cmake
-*.cmake
 
 # Python
 __pycache__/
@@ -30,8 +20,6 @@ develop-eggs/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
 parts/
 sdist/
 var/
@@ -84,7 +72,6 @@ Thumbs.db
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
@@ -103,40 +90,6 @@ Thumbs.db
 gr-*/build/
 *.grc~
 
-# Log files
-*.log
-
-# Temporary files
-*.tmp
-*.temp
-*.bak
-*.backup
-
 # OS generated files
 .DS_Store
 .DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Documentation build
-docs/_build/
-docs/build/
-site/
-
-# Coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/

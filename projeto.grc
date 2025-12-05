@@ -21,6 +21,10 @@ options:
     run_command: '{python} -u {filename}'
     run_options: prompt
     sizing_mode: fixed
+    snippets:
+      after_init: |-
+        self.epy_block_0.pluto_source = self.iio_pluto_source_0
+        self.epy_block_0.set_top_block(self)
     thread_safe_setters: ''
     title: Not titled yet
     window_size: (1000,1000)
@@ -28,7 +32,7 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [24, 152.0]
+    coordinate: [16, 136.0]
     rotation: 0
     state: enabled
 
@@ -44,22 +48,22 @@ blocks:
     rangeType: float
     start: '0'
     step: '1'
-    stop: '70'
-    value: '50'
+    stop: '100'
+    value: '35'
     widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [192, 616.0]
+    coordinate: [200, 448.0]
     rotation: 0
     state: enabled
-- name: chan_est
+- name: algorithm
   id: variable_qtgui_chooser
   parameters:
     comment: ''
     gui_hint: ''
-    label: ''
+    label: algorithm
     label0: ''
     label1: ''
     label2: ''
@@ -81,7 +85,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [32, 744.0]
+    coordinate: [40, 576.0]
     rotation: 0
     state: enabled
 - name: freq
@@ -95,27 +99,40 @@ blocks:
     label2: ''
     label3: ''
     label4: ''
-    labels: '["Ch 36 (5.18 GHz)", "Ch 40 (5.20 GHz)", "Ch 44 (5.22 GHz)", "Ch 48 (5.24
-      GHz)", "Ch 52 (5.26 GHz)", "Ch 56 (5.28 GHz)", "Ch 60 (5.30 GHz)", "Ch 64 (5.32
-      GHz)", "Ch 149 (5.745 GHz)", "Ch 153 (5.765 GHz)", "Ch 157 (5.785 GHz)", "Ch
-      161 (5.805 GHz)"]'
+    labels: '[''CH1(2.412GHz)'', ''CH2(2.417GHz)'', ''CH3(2.422GHz)'', ''CH4(2.427GHz)'',
+      ''CH5(2.432GHz)'', ''CH6(2.437GHz)'', ''CH7(2.442GHz)'', ''CH8(2.447GHz)'',
+      ''CH9(2.452GHz)'', ''CH10(2.457GHz)'', ''CH11(2.462GHz)'', ''CH12(2.467GHz)'',
+      ''CH13(2.472GHz)'', ''CH14(2.484GHz)'', ''CH32(5.16e9)'', ''CH36(5.18e9)'',
+      ''CH40(5.20e9)'', ''CH44(5.22e9)'', ''CH48(5.24e9)'', ''CH52(5.26e9)'', ''CH56(5.28e9)'',
+      ''CH60(5.30e9)'', ''CH64(5.32e9)'', ''CH68(5.34e9)'', ''CH96(5.48e9)'', ''CH100(5.50e9)'',
+      ''CH104(5.52e9)'', ''CH108(5.54e9)'', ''CH112(5.56e9)'', ''CH116(5.58e9)'',
+      ''CH120(5.60e9)'', ''CH124(5.62e9)'', ''CH128(5.64e9)'', ''CH132(5.66e9)'',
+      ''CH136(5.68e9)'', ''CH140(5.70e9)'', ''CH144(5.72e9)'', ''CH149(5.745e9)'',
+      ''CH153(5.765e9)'', ''CH157(5.785e9)'', ''CH161(5.805e9)'', ''CH165(5.825e9)'',
+      ''CH169(5.845e9)'', ''CH173(5.865e9)'', ''CH177(5.885e9)'']'
     num_opts: '0'
     option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
     option4: '4'
-    options: '[5.18e9, 5.20e9, 5.22e9, 5.24e9, 5.26e9, 5.28e9, 5.30e9, 5.32e9, 5.745e9,
-      5.765e9, 5.785e9, 5.805e9]'
+    options: '[2412000000.0, 2417000000.0, 2422000000.0, 2427000000.0, 2432000000.0,
+      2437000000.0, 2442000000.0, 2447000000.0, 2452000000.0, 2457000000.0, 2462000000.0,
+      2467000000.0, 2472000000.0, 2484000000.0, 5160000000.0, 5180000000.0, 5200000000.0,
+      5220000000.0, 5240000000.0, 5260000000.0, 5280000000.0, 5300000000.0, 5320000000.0,
+      5340000000.0, 5480000000.0, 5500000000.0, 5520000000.0, 5540000000.0, 5560000000.0,
+      5580000000.0, 5600000000.0, 5620000000.0, 5640000000.0, 5660000000.0, 5680000000.0,
+      5700000000.0, 5720000000.0, 5745000000.0, 5765000000.0, 5785000000.0, 5805000000.0,
+      5825000000.0, 5845000000.0, 5865000000.0, 5885000000.0]'
     orient: Qt.QVBoxLayout
     type: real
-    value: 5.22e9
+    value: 2.437e9
     widget: combo_box
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [24, 320.0]
+    coordinate: [16, 224.0]
     rotation: 0
     state: enabled
 - name: samp_rate
@@ -127,19 +144,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [120, 248.0]
-    rotation: 0
-    state: enabled
-- name: scan_interval
-  id: variable
-  parameters:
-    comment: ''
-    value: '5'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [480, 16.0]
+    coordinate: [8, 368.0]
     rotation: 0
     state: enabled
 - name: threshold
@@ -160,7 +165,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [24, 608.0]
+    coordinate: [8, 440.0]
     rotation: 0
     state: enabled
 - name: window_size
@@ -172,7 +177,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [360, 16.0]
+    coordinate: [96, 368.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_0
@@ -286,10 +291,10 @@ blocks:
     affinity: ''
     alias: ''
     append: 'False'
-    comment: ''
+    comment: 'Wireshark live: wireshark /tmp/wifi_live.pcap'
     file: /home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/data.pcap
     type: byte
-    unbuffered: 'False'
+    unbuffered: 'True'
     vlen: '1'
   states:
     bus_sink: false
@@ -305,7 +310,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/Wifi_Project_Baseband_recordings/Wifi_Project_Baseband_recordings/Sample1_20MHz_Channel36.bin
+    file: /home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/Wifi_Project_Baseband_recordings/Wifi_Project_Baseband_recordings/Sample3_20MHz_Channel100.bin
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -317,24 +322,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 16.0]
+    coordinate: [0, 16.0]
     rotation: 0
-    state: enabled
-- name: blocks_message_debug_0
-  id: blocks_message_debug
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    en_uvec: 'True'
-    log_level: info
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1368, 608.0]
-    rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_multiply_xx_0
   id: blocks_multiply_xx
   parameters:
@@ -391,21 +381,174 @@ blocks:
     bus_structure: null
     coordinate: [336, 88.0]
     rotation: 0
-    state: enabled
-- name: channel_scanner_0
-  id: my_blocks_channel_scanner
+    state: disabled
+- name: epy_block_0
+  id: epy_block
   parameters:
+    _source_code: "\"\"\"\nEmbedded Python Blocks:\n\nEach time this file is saved,\
+      \ GRC will instantiate the first class it finds\nto get ports and parameters\
+      \ of your block. The arguments to __init__  will\nbe the parameters. All of\
+      \ them are required to have default values!\n\"\"\"\n\nimport numpy as np\n\
+      from gnuradio import gr\nimport time\nimport threading\n\n\nclass blk(gr.sync_block):\n\
+      \    \"\"\"WiFi Channel Sweeper - Varre canais 2.4 GHz e 5 GHz automaticamente\"\
+      \"\"\n\n    def __init__(self, pluto_source=None, interval_seconds=10):\n  \
+      \      \"\"\"\n        pluto_source: Refer\xEAncia ao bloco PlutoSDR Source\n\
+      \        interval_seconds: Tempo em cada canal (default 10s)\n        \"\"\"\
+      \n        gr.sync_block.__init__(\n            self,\n            name='WiFi\
+      \ Channel Sweeper',\n            in_sig=None,\n            out_sig=None\n  \
+      \      )\n        \n        self.pluto_source = pluto_source\n        self.top_block\
+      \ = None  # Ser\xE1 detectado automaticamente\n        self.interval = interval_seconds\n\
+      \        self.running = False\n        self.sweep_thread = None\n        \n\
+      \        # Canais WiFi 2.4 GHz (1-11)\n        self.channels_24ghz = {\n   \
+      \         1: (2.412e9, '2.4GHz'),\n            2: (2.417e9, '2.4GHz'),\n   \
+      \         3: (2.422e9, '2.4GHz'),\n            4: (2.427e9, '2.4GHz'),\n   \
+      \         5: (2.432e9, '2.4GHz'),\n            6: (2.437e9, '2.4GHz'),\n   \
+      \         7: (2.442e9, '2.4GHz'),\n            8: (2.447e9, '2.4GHz'),\n   \
+      \         9: (2.452e9, '2.4GHz'),\n            10: (2.457e9, '2.4GHz'),\n  \
+      \          11: (2.462e9, '2.4GHz'),\n        }\n        \n        # Canais 5\
+      \ GHz mais comuns (802.11a/n/ac)\n        self.channels_5ghz = {\n         \
+      \   36: (5.180e9, '5GHz'),\n            40: (5.200e9, '5GHz'),\n           \
+      \ 44: (5.220e9, '5GHz'),\n            48: (5.240e9, '5GHz'),\n            52:\
+      \ (5.260e9, '5GHz'),\n            56: (5.280e9, '5GHz'),\n            60: (5.300e9,\
+      \ '5GHz'),\n            64: (5.320e9, '5GHz'),\n            149: (5.745e9, '5GHz'),\n\
+      \            153: (5.765e9, '5GHz'),\n            157: (5.785e9, '5GHz'),\n\
+      \            161: (5.805e9, '5GHz'),\n            165: (5.825e9, '5GHz'),\n\
+      \        }\n        \n        # Inicia a thread de detec\xE7\xE3o e sweep com\
+      \ delay\n        if pluto_source:\n            self.sweep_thread = threading.Thread(target=self._init_and_sweep,\
+      \ daemon=True)\n            self.sweep_thread.start()\n    \n    def _init_and_sweep(self):\n\
+      \        \"\"\"Detecta o top_block e inicia o sweep (com delay para inicializa\xE7\
+      \xE3o)\"\"\"\n        # Aguarda 2 segundos para o flowgraph inicializar completamente\n\
+      \        time.sleep(2)\n        \n        # Tenta detectar o top_block\n   \
+      \     try:\n            import inspect\n            frame = inspect.currentframe()\n\
+      \            for _ in range(15):  # Procura nos frames\n                if frame\
+      \ is None:\n                    break\n                if 'self' in frame.f_locals:\n\
+      \                    obj = frame.f_locals['self']\n                    if hasattr(obj,\
+      \ 'set_freq') and hasattr(obj, 'iio_pluto_source_0'):\n                    \
+      \    self.top_block = obj\n                        print(f\"[SWEEP] Top block\
+      \ detectado: {type(obj).__name__}\")\n                        break\n      \
+      \          frame = frame.f_back\n        except Exception as e:\n          \
+      \  print(f\"[SWEEP] Erro ao detectar top_block: {e}\")\n        \n        #\
+      \ Se n\xE3o detectou, tenta obter do parent do pluto_source\n        if self.top_block\
+      \ is None and self.pluto_source:\n            try:\n                # Navega\
+      \ na hierarquia do GNU Radio\n                if hasattr(self.pluto_source,\
+      \ 'to_basic_block'):\n                    basic_block = self.pluto_source.to_basic_block()\n\
+      \                    if hasattr(basic_block, 'detail'):\n                  \
+      \      detail = basic_block.detail()\n                        # Tenta acessar\
+      \ o flowgraph\n                        if hasattr(detail, 'owner'):\n      \
+      \                      parent = detail.owner()\n                           \
+      \ if hasattr(parent, 'set_freq'):\n                                self.top_block\
+      \ = parent\n                                print(f\"[SWEEP] Top block obtido\
+      \ via hierarquia GNU Radio\")\n            except Exception as e:\n        \
+      \        print(f\"[SWEEP] N\xE3o foi poss\xEDvel obter top_block via hierarquia:\
+      \ {e}\")\n        \n        if self.top_block and self.pluto_source:\n     \
+      \       self.start_sweep()\n        else:\n            print(\"[SWEEP ERRO]\
+      \ N\xE3o foi poss\xEDvel detectar o top_block automaticamente\")\n         \
+      \   print(f\"[SWEEP DEBUG] pluto_source={self.pluto_source}, top_block={self.top_block}\"\
+      )\n    \n    def start_sweep(self):\n        \"\"\"Inicia o sweep autom\xE1\
+      tico\"\"\"\n        if not self.running and self.pluto_source and self.top_block:\n\
+      \            self.running = True\n            self.sweep_thread = threading.Thread(target=self._sweep_loop,\
+      \ daemon=True)\n            self.sweep_thread.start()\n            print(\"\
+      [SWEEP] Iniciado - varrendo 2.4 GHz (canais 1-11) e 5 GHz (canais 36-165)\"\
+      )\n    \n    def stop_sweep(self):\n        \"\"\"Para o sweep\"\"\"\n     \
+      \   self.running = False\n        if self.sweep_thread:\n            self.sweep_thread.join(timeout=2)\n\
+      \        print(\"[SWEEP] Parado\")\n    \n    def _sweep_loop(self):\n     \
+      \   \"\"\"Loop principal do sweep\"\"\"\n        while self.running:\n     \
+      \       # Varre canais 2.4 GHz\n            print(f\"\\n{'#'*60}\")\n      \
+      \      print(f\"# Varrendo banda 2.4 GHz (802.11b/g/n)\")\n            print(f\"\
+      {'#'*60}\")\n            \n            for ch in sorted(self.channels_24ghz.keys()):\n\
+      \                if not self.running:\n                    break\n         \
+      \           \n                freq, band = self.channels_24ghz[ch]\n       \
+      \         try:\n                    # Atualizar PlutoSDR\n                 \
+      \   self.pluto_source.set_frequency(int(freq))\n                    # Atualizar\
+      \ vari\xE1vel freq no flowgraph (para o equalizer)\n                    self.top_block.set_freq(freq)\n\
+      \                    \n                    print(f\"\\n{'='*60}\")\n       \
+      \             print(f\"[SWEEP] Canal {ch} ({band}) - {freq/1e9:.3f} GHz\")\n\
+      \                    print(f\"{'='*60}\")\n                    \n          \
+      \          time.sleep(self.interval)\n                    \n               \
+      \ except Exception as e:\n                    print(f\"[SWEEP ERROR] Erro ao\
+      \ mudar para canal {ch}: {e}\")\n            \n            # Varre canais 5\
+      \ GHz\n            if self.running:\n                print(f\"\\n{'#'*60}\"\
+      )\n                print(f\"# Varrendo banda 5 GHz (802.11a/n/ac)\")\n     \
+      \           print(f\"{'#'*60}\")\n                \n                for ch in\
+      \ sorted(self.channels_5ghz.keys()):\n                    if not self.running:\n\
+      \                        break\n                        \n                 \
+      \   freq, band = self.channels_5ghz[ch]\n                    try:\n        \
+      \                # Atualizar PlutoSDR\n                        self.pluto_source.set_frequency(int(freq))\n\
+      \                        # Atualizar vari\xE1vel freq no flowgraph (para o equalizer)\n\
+      \                        self.top_block.set_freq(freq)\n                   \
+      \     \n                        print(f\"\\n{'='*60}\")\n                  \
+      \      print(f\"[SWEEP] Canal {ch} ({band}) - {freq/1e9:.3f} GHz\")\n      \
+      \                  print(f\"{'='*60}\")\n                        \n        \
+      \                time.sleep(self.interval)\n                        \n     \
+      \               except Exception as e:\n                        print(f\"[SWEEP\
+      \ ERROR] Erro ao mudar para canal {ch}: {e}\")\n            \n            if\
+      \ self.running:\n                print(f\"\\n[SWEEP] Ciclo completo (2.4GHz\
+      \ + 5GHz) - reiniciando...\")\n    \n    def stop(self):\n        \"\"\"Cleanup\
+      \ quando o flowgraph para\"\"\"\n        self.stop_sweep()\n        return True\n\
+      \    \n    def work(self, input_items, output_items):\n        \"\"\"N\xE3o\
+      \ processa samples\"\"\"\n        return 0\n"
     affinity: ''
     alias: ''
     comment: ''
-    scan_interval: scan_interval
+    interval_seconds: '10'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pluto_source: None
   states:
+    _io_cache: ('WiFi Channel Sweeper', 'blk', [('pluto_source', 'None'), ('interval_seconds',
+      '10')], [], [], 'WiFi Channel Sweeper - Varre canais 2.4 GHz e 5 GHz automaticamente',
+      ['pluto_source'])
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1048, 648.0]
+    coordinate: [464, 696.0]
     rotation: 0
-    state: disabled
+    state: enabled
+- name: epy_block_1
+  id: epy_block
+  parameters:
+    _source_code: "\"\"\"\nEmbedded Python Blocks:\n\nEach time this file is saved,\
+      \ GRC will instantiate the first class it finds\nto get ports and parameters\
+      \ of your block. The arguments to __init__  will\nbe the parameters. All of\
+      \ them are required to have default values!\n\"\"\"\n\nfrom PyQt5 import Qt\n\
+      from gnuradio import qtgui\nfrom PyQt5 import QtCore\nfrom PyQt5.QtCore import\
+      \ QObject, pyqtSlot\nfrom gnuradio import blocks\nimport pmt\nfrom gnuradio\
+      \ import blocks, gr\nfrom gnuradio import fft\nfrom gnuradio.fft import window\n\
+      from gnuradio import filter\nfrom gnuradio.filter import firdes\nfrom gnuradio\
+      \ import gr\nimport sys\nimport signal\nfrom PyQt5 import Qt\nfrom argparse\
+      \ import ArgumentParser\nfrom gnuradio.eng_arg import eng_float, intx\nfrom\
+      \ gnuradio import eng_notation\nimport foo\nimport ieee802_11\n\n\n\n# Custom\
+      \ message handler for WiFi info\nclass wifi_info_printer(gr.basic_block):\n\
+      \    def __init__(self):\n        gr.basic_block.__init__(self,\n          \
+      \  name=\"WiFi Info Printer\",\n            in_sig=None,\n            out_sig=None)\n\
+      \        self.message_port_register_in(pmt.intern('in'))\n        self.set_msg_handler(pmt.intern('in'),\
+      \ self.handle_msg)\n    \n    def handle_msg(self, msg):\n        try:\n   \
+      \         meta = pmt.car(msg)\n            ssid = pmt.dict_ref(meta, pmt.intern('ssid'),\
+      \ pmt.PMT_NIL)\n            freq = pmt.dict_ref(meta, pmt.intern('nominal frequency'),\
+      \ pmt.PMT_NIL)\n            \n            if not pmt.is_null(ssid) and not pmt.is_null(freq):\n\
+      \                ssid_str = pmt.symbol_to_string(ssid)\n                freq_val\
+      \ = pmt.to_double(freq)\n                channel = self.freq_to_channel(freq_val)\n\
+      \                print(f\"SSID: {ssid_str}  |  Channel: {channel} ({freq_val/1e9:.2f}\
+      \ GHz)\")\n        except Exception as e:\n            pass\n    \n    def freq_to_channel(self,\
+      \ freq_hz):\n        # 5 GHz band channels\n        if 5000e6 < freq_hz < 6000e6:\n\
+      \            channel = int((freq_hz - 5000e6) / 5e6)\n            return channel\n\
+      \        # 2.4 GHz band channels\n        elif 2400e6 < freq_hz < 2500e6:\n\
+      \            if freq_hz == 2484e6:\n                return 14\n            else:\n\
+      \                return int((freq_hz - 2407e6) / 5e6)\n        return \"Unknown\""
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    _io_cache: ('WiFi Info Printer', 'wifi_info_printer', [], [('in', 'message', 1)],
+      [], '', [])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1360, 648.0]
+    rotation: 0
+    state: enabled
 - name: fft_vxx_0
   id: fft_vxx
   parameters:
@@ -471,7 +614,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    debug: 'False'
+    debug: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
     tech: '127'
@@ -503,7 +646,7 @@ blocks:
   id: ieee802_11_frame_equalizer
   parameters:
     affinity: ''
-    algo: chan_est
+    algo: algorithm
     alias: ''
     bw: samp_rate
     comment: ''
@@ -525,7 +668,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    debug: 'True'
+    debug: 'False'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -580,7 +723,7 @@ blocks:
     alias: ''
     bandwidth: '20000000'
     bbdc: 'False'
-    buffer_size: '262144'
+    buffer_size: '26768'
     comment: ''
     filter: ''
     filter_source: '''Auto'''
@@ -603,274 +746,7 @@ blocks:
     bus_structure: null
     coordinate: [296, 172.0]
     rotation: 0
-    state: disabled
-- name: pdu_pdu_to_tagged_stream_0
-  id: pdu_pdu_to_tagged_stream
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    tag: packet_len
-    type: complex
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [632, 688.0]
-    rotation: 180
-    state: disabled
-- name: qtgui_const_sink_x_0
-  id: qtgui_const_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'False'
-    axislabels: 'True'
-    color1: '"blue"'
-    color10: '"dark blue"'
-    color2: '"red"'
-    color3: '"green"'
-    color4: '"black"'
-    color5: '"cyan"'
-    color6: '"magenta"'
-    color7: '"yellow"'
-    color8: '"dark red"'
-    color9: '"dark green"'
-    comment: ''
-    grid: 'False'
-    gui_hint: ''
-    label1: ''
-    label10: ''
-    label2: ''
-    label3: ''
-    label4: ''
-    label5: ''
-    label6: ''
-    label7: ''
-    label8: ''
-    label9: ''
-    legend: 'True'
-    marker1: '0'
-    marker10: '0'
-    marker2: '0'
-    marker3: '0'
-    marker4: '0'
-    marker5: '0'
-    marker6: '0'
-    marker7: '0'
-    marker8: '0'
-    marker9: '0'
-    name: '""'
-    nconnections: '1'
-    size: 48*10
-    style1: '0'
-    style10: '0'
-    style2: '0'
-    style3: '0'
-    style4: '0'
-    style5: '0'
-    style6: '0'
-    style7: '0'
-    style8: '0'
-    style9: '0'
-    tr_chan: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: complex
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    xmax: '2'
-    xmin: '-2'
-    ymax: '2'
-    ymin: '-2'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [376, 680.0]
-    rotation: 180
-    state: disabled
-- name: qtgui_time_sink_x_0
-  id: qtgui_time_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'False'
-    axislabels: 'True'
-    color1: blue
-    color10: dark blue
-    color2: red
-    color3: green
-    color4: black
-    color5: cyan
-    color6: magenta
-    color7: yellow
-    color8: dark red
-    color9: dark green
-    comment: ''
-    ctrlpanel: 'False'
-    entags: 'True'
-    grid: 'False'
-    gui_hint: ''
-    label1: Signal 1
-    label10: Signal 10
-    label2: Signal 2
-    label3: Signal 3
-    label4: Signal 4
-    label5: Signal 5
-    label6: Signal 6
-    label7: Signal 7
-    label8: Signal 8
-    label9: Signal 9
-    legend: 'True'
-    marker1: '-1'
-    marker10: '-1'
-    marker2: '-1'
-    marker3: '-1'
-    marker4: '-1'
-    marker5: '-1'
-    marker6: '-1'
-    marker7: '-1'
-    marker8: '-1'
-    marker9: '-1'
-    name: '""'
-    nconnections: '1'
-    size: '1024'
-    srate: samp_rate
-    stemplot: 'False'
-    style1: '1'
-    style10: '1'
-    style2: '1'
-    style3: '1'
-    style4: '1'
-    style5: '1'
-    style6: '1'
-    style7: '1'
-    style8: '1'
-    style9: '1'
-    tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: float
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    ylabel: Amplitude
-    ymax: '1'
-    ymin: '-1'
-    yunit: '""'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1816, 56.0]
-    rotation: 0
-    state: disabled
-- name: qtgui_waterfall_sink_x_0
-  id: qtgui_waterfall_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    axislabels: 'True'
-    bw: samp_rate
-    color1: '0'
-    color10: '0'
-    color2: '0'
-    color3: '0'
-    color4: '0'
-    color5: '0'
-    color6: '0'
-    color7: '0'
-    color8: '0'
-    color9: '0'
-    comment: ''
-    fc: freq
-    fftsize: '1024'
-    freqhalf: 'True'
-    grid: 'False'
-    gui_hint: ''
-    int_max: '10'
-    int_min: '-140'
-    label1: ''
-    label10: ''
-    label2: ''
-    label3: ''
-    label4: ''
-    label5: ''
-    label6: ''
-    label7: ''
-    label8: ''
-    label9: ''
-    legend: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    name: '"WiFi Signal"'
-    nconnections: '1'
-    showports: 'False'
-    type: complex
-    update_time: '0.10'
-    wintype: window.WIN_BLACKMAN_hARRIS
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [240, 464.0]
-    rotation: 0
-    state: disabled
+    state: enabled
 
 connections:
 - [blocks_complex_to_mag_0, '0', blocks_divide_xx_0, '0']
@@ -880,7 +756,6 @@ connections:
 - [blocks_delay_0, '0', ieee802_11_sync_short_0, '0']
 - [blocks_delay_0_0, '0', ieee802_11_sync_long_0, '1']
 - [blocks_divide_xx_0, '0', ieee802_11_sync_short_0, '2']
-- [blocks_divide_xx_0, '0', qtgui_time_sink_x_0, '0']
 - [blocks_file_source_0, '0', blocks_throttle2_0, '0']
 - [blocks_multiply_xx_0, '0', fir_filter_xxx_0, '0']
 - [blocks_stream_to_vector_1, '0', fft_vxx_0, '0']
@@ -894,9 +769,7 @@ connections:
 - [foo_wireshark_connector_0, '0', blocks_file_sink_0, '0']
 - [ieee802_11_decode_mac_0, out, ieee802_11_parse_mac_0, in]
 - [ieee802_11_frame_equalizer_0, '0', ieee802_11_decode_mac_0, '0']
-- [ieee802_11_frame_equalizer_0, symbols, pdu_pdu_to_tagged_stream_0, pdus]
-- [ieee802_11_parse_mac_0, out, blocks_message_debug_0, print]
-- [ieee802_11_parse_mac_0, out, channel_scanner_0, ssid_in]
+- [ieee802_11_parse_mac_0, out, epy_block_1, in]
 - [ieee802_11_parse_mac_0, out, foo_wireshark_connector_0, in]
 - [ieee802_11_sync_long_0, '0', blocks_stream_to_vector_1, '0']
 - [ieee802_11_sync_short_0, '0', blocks_delay_0_0, '0']
@@ -904,8 +777,6 @@ connections:
 - [iio_pluto_source_0, '0', blocks_complex_to_mag_squared_0, '0']
 - [iio_pluto_source_0, '0', blocks_delay_0, '0']
 - [iio_pluto_source_0, '0', blocks_multiply_xx_0, '1']
-- [iio_pluto_source_0, '0', qtgui_waterfall_sink_x_0, '0']
-- [pdu_pdu_to_tagged_stream_0, '0', qtgui_const_sink_x_0, '0']
 
 metadata:
   file_format: 1

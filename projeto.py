@@ -13,8 +13,6 @@ from gnuradio import qtgui
 from PyQt5 import QtCore
 from PyQt5.QtCore import QObject, pyqtSlot
 from gnuradio import blocks
-import pmt
-from gnuradio import blocks, gr
 from gnuradio import fft
 from gnuradio.fft import window
 from gnuradio import filter
@@ -26,8 +24,11 @@ from PyQt5 import Qt
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
+from gnuradio import iio
 import foo
 import ieee802_11
+import projeto_epy_block_0 as epy_block_0  # embedded python block
+import projeto_epy_block_1 as epy_block_1  # embedded python block
 import threading
 
 
@@ -70,11 +71,10 @@ class projeto(gr.top_block, Qt.QWidget):
         ##################################################
         self.window_size = window_size = 48
         self.threshold = threshold = 0.56
-        self.scan_interval = scan_interval = 5
         self.samp_rate = samp_rate = 20000000
-        self.freq = freq = 5.22e9
-        self.chan_est = chan_est = 0
-        self.PlutoSDR_gain = PlutoSDR_gain = 50
+        self.freq = freq = 2.437e9
+        self.algorithm = algorithm = 0
+        self.PlutoSDR_gain = PlutoSDR_gain = 35
 
         ##################################################
         # Blocks
@@ -84,9 +84,9 @@ class projeto(gr.top_block, Qt.QWidget):
         self._threshold_win = qtgui.RangeWidget(self._threshold_range, self.set_threshold, "Sync Short Threshold", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._threshold_win)
         # Create the options list
-        self._freq_options = [5180000000.0, 5200000000.0, 5220000000.0, 5240000000.0, 5260000000.0, 5280000000.0, 5300000000.0, 5320000000.0, 5745000000.0, 5765000000.0, 5785000000.0, 5805000000.0]
+        self._freq_options = [2412000000.0, 2417000000.0, 2422000000.0, 2427000000.0, 2432000000.0, 2437000000.0, 2442000000.0, 2447000000.0, 2452000000.0, 2457000000.0, 2462000000.0, 2467000000.0, 2472000000.0, 2484000000.0, 5160000000.0, 5180000000.0, 5200000000.0, 5220000000.0, 5240000000.0, 5260000000.0, 5280000000.0, 5300000000.0, 5320000000.0, 5340000000.0, 5480000000.0, 5500000000.0, 5520000000.0, 5540000000.0, 5560000000.0, 5580000000.0, 5600000000.0, 5620000000.0, 5640000000.0, 5660000000.0, 5680000000.0, 5700000000.0, 5720000000.0, 5745000000.0, 5765000000.0, 5785000000.0, 5805000000.0, 5825000000.0, 5845000000.0, 5865000000.0, 5885000000.0]
         # Create the labels list
-        self._freq_labels = ['Ch 36 (5.18 GHz)', 'Ch 40 (5.20 GHz)', 'Ch 44 (5.22 GHz)', 'Ch 48 (5.24 GHz)', 'Ch 52 (5.26 GHz)', 'Ch 56 (5.28 GHz)', 'Ch 60 (5.30 GHz)', 'Ch 64 (5.32 GHz)', 'Ch 149 (5.745 GHz)', 'Ch 153 (5.765 GHz)', 'Ch 157 (5.785 GHz)', 'Ch 161 (5.805 GHz)']
+        self._freq_labels = ['CH1(2.412GHz)', 'CH2(2.417GHz)', 'CH3(2.422GHz)', 'CH4(2.427GHz)', 'CH5(2.432GHz)', 'CH6(2.437GHz)', 'CH7(2.442GHz)', 'CH8(2.447GHz)', 'CH9(2.452GHz)', 'CH10(2.457GHz)', 'CH11(2.462GHz)', 'CH12(2.467GHz)', 'CH13(2.472GHz)', 'CH14(2.484GHz)', 'CH32(5.16e9)', 'CH36(5.18e9)', 'CH40(5.20e9)', 'CH44(5.22e9)', 'CH48(5.24e9)', 'CH52(5.26e9)', 'CH56(5.28e9)', 'CH60(5.30e9)', 'CH64(5.32e9)', 'CH68(5.34e9)', 'CH96(5.48e9)', 'CH100(5.50e9)', 'CH104(5.52e9)', 'CH108(5.54e9)', 'CH112(5.56e9)', 'CH116(5.58e9)', 'CH120(5.60e9)', 'CH124(5.62e9)', 'CH128(5.64e9)', 'CH132(5.66e9)', 'CH136(5.68e9)', 'CH140(5.70e9)', 'CH144(5.72e9)', 'CH149(5.745e9)', 'CH153(5.765e9)', 'CH157(5.785e9)', 'CH161(5.805e9)', 'CH165(5.825e9)', 'CH169(5.845e9)', 'CH173(5.865e9)', 'CH177(5.885e9)']
         # Create the combo box
         self._freq_tool_bar = Qt.QToolBar(self)
         self._freq_tool_bar.addWidget(Qt.QLabel("WiFi Channel" + ": "))
@@ -104,65 +104,73 @@ class projeto(gr.top_block, Qt.QWidget):
         for c in range(1, 2):
             self.top_grid_layout.setColumnStretch(c, 1)
         # Create the options list
-        self._chan_est_options = [0, 1, 2, 3]
+        self._algorithm_options = [0, 1, 2, 3]
         # Create the labels list
-        self._chan_est_labels = ['LS', 'LMS', 'Linear Comb', 'STA']
+        self._algorithm_labels = ['LS', 'LMS', 'Linear Comb', 'STA']
         # Create the combo box
         # Create the radio buttons
-        self._chan_est_group_box = Qt.QGroupBox("'chan_est'" + ": ")
-        self._chan_est_box = Qt.QHBoxLayout()
+        self._algorithm_group_box = Qt.QGroupBox("algorithm" + ": ")
+        self._algorithm_box = Qt.QHBoxLayout()
         class variable_chooser_button_group(Qt.QButtonGroup):
             def __init__(self, parent=None):
                 Qt.QButtonGroup.__init__(self, parent)
             @pyqtSlot(int)
             def updateButtonChecked(self, button_id):
                 self.button(button_id).setChecked(True)
-        self._chan_est_button_group = variable_chooser_button_group()
-        self._chan_est_group_box.setLayout(self._chan_est_box)
-        for i, _label in enumerate(self._chan_est_labels):
+        self._algorithm_button_group = variable_chooser_button_group()
+        self._algorithm_group_box.setLayout(self._algorithm_box)
+        for i, _label in enumerate(self._algorithm_labels):
             radio_button = Qt.QRadioButton(_label)
-            self._chan_est_box.addWidget(radio_button)
-            self._chan_est_button_group.addButton(radio_button, i)
-        self._chan_est_callback = lambda i: Qt.QMetaObject.invokeMethod(self._chan_est_button_group, "updateButtonChecked", Qt.Q_ARG("int", self._chan_est_options.index(i)))
-        self._chan_est_callback(self.chan_est)
-        self._chan_est_button_group.buttonClicked[int].connect(
-            lambda i: self.set_chan_est(self._chan_est_options[i]))
-        self.top_layout.addWidget(self._chan_est_group_box)
+            self._algorithm_box.addWidget(radio_button)
+            self._algorithm_button_group.addButton(radio_button, i)
+        self._algorithm_callback = lambda i: Qt.QMetaObject.invokeMethod(self._algorithm_button_group, "updateButtonChecked", Qt.Q_ARG("int", self._algorithm_options.index(i)))
+        self._algorithm_callback(self.algorithm)
+        self._algorithm_button_group.buttonClicked[int].connect(
+            lambda i: self.set_algorithm(self._algorithm_options[i]))
+        self.top_layout.addWidget(self._algorithm_group_box)
+        self._PlutoSDR_gain_range = qtgui.Range(0, 100, 1, 35, 200)
+        self._PlutoSDR_gain_win = qtgui.RangeWidget(self._PlutoSDR_gain_range, self.set_PlutoSDR_gain, "'PlutoSDR_gain'", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._PlutoSDR_gain_win)
+        self.iio_pluto_source_0 = iio.fmcomms2_source_fc32('usb:1.4.5' if 'usb:1.4.5' else iio.get_pluto_uri(), [True, True], 26768)
+        self.iio_pluto_source_0.set_len_tag_key('packet_len')
+        self.iio_pluto_source_0.set_frequency(int(freq))
+        self.iio_pluto_source_0.set_samplerate(samp_rate)
+        self.iio_pluto_source_0.set_gain_mode(0, 'manual')
+        self.iio_pluto_source_0.set_gain(0, PlutoSDR_gain)
+        self.iio_pluto_source_0.set_quadrature(True)
+        self.iio_pluto_source_0.set_rfdc(True)
+        self.iio_pluto_source_0.set_bbdc(False)
+        self.iio_pluto_source_0.set_filter_params('Auto', '', 0, 0)
         self.ieee802_11_sync_short_0 = ieee802_11.sync_short(threshold, 2, False, False)
         self.ieee802_11_sync_long_0 = ieee802_11.sync_long(240, False, False)
-        self.ieee802_11_parse_mac_0 = ieee802_11.parse_mac(False, True)
-        self.ieee802_11_frame_equalizer_0 = ieee802_11.frame_equalizer(chan_est, freq, samp_rate, False, False)
+        self.ieee802_11_parse_mac_0 = ieee802_11.parse_mac(False, False)
+        self.ieee802_11_frame_equalizer_0 = ieee802_11.frame_equalizer(algorithm, freq, samp_rate, False, False)
         self.ieee802_11_decode_mac_0 = ieee802_11.decode_mac(False, False)
-        self.foo_wireshark_connector_0 = foo.wireshark_connector(127, False)
+        self.foo_wireshark_connector_0 = foo.wireshark_connector(127, True)
         self.fir_filter_xxx_0_0 = filter.fir_filter_fff(1, [1] * window_size)
         self.fir_filter_xxx_0_0.declare_sample_delay(0)
         self.fir_filter_xxx_0 = filter.fir_filter_ccc(1, [1] * window_size)
         self.fir_filter_xxx_0.declare_sample_delay(0)
         self.fft_vxx_0 = fft.fft_vcc(64, True, [], True, 1)
-        self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
+        self.epy_block_1 = epy_block_1.wifi_info_printer()
+        self.epy_block_0 = epy_block_0.blk(pluto_source=None, interval_seconds=10)
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, 64)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
-        self.blocks_message_debug_0 = blocks.message_debug(True, gr.log_levels.info)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/Wifi_Project_Baseband_recordings/Wifi_Project_Baseband_recordings/Sample1_20MHz_Channel36.bin', True, 0, 0)
-        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/data.pcap', False)
-        self.blocks_file_sink_0.set_unbuffered(False)
+        self.blocks_file_sink_0.set_unbuffered(True)
         self.blocks_divide_xx_0 = blocks.divide_ff(1)
         self.blocks_delay_0_0 = blocks.delay(gr.sizeof_gr_complex*1, 240)
         self.blocks_delay_0 = blocks.delay(gr.sizeof_gr_complex*1, 16)
         self.blocks_conjugate_cc_0 = blocks.conjugate_cc()
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
         self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
-        self._PlutoSDR_gain_range = qtgui.Range(0, 70, 1, 50, 200)
-        self._PlutoSDR_gain_win = qtgui.RangeWidget(self._PlutoSDR_gain_range, self.set_PlutoSDR_gain, "'PlutoSDR_gain'", "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_layout.addWidget(self._PlutoSDR_gain_win)
 
 
         ##################################################
         # Connections
         ##################################################
         self.msg_connect((self.ieee802_11_decode_mac_0, 'out'), (self.ieee802_11_parse_mac_0, 'in'))
-        self.msg_connect((self.ieee802_11_parse_mac_0, 'out'), (self.blocks_message_debug_0, 'print'))
+        self.msg_connect((self.ieee802_11_parse_mac_0, 'out'), (self.epy_block_1, 'in'))
         self.msg_connect((self.ieee802_11_parse_mac_0, 'out'), (self.foo_wireshark_connector_0, 'in'))
         self.connect((self.blocks_complex_to_mag_0, 0), (self.blocks_divide_xx_0, 0))
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.fir_filter_xxx_0_0, 0))
@@ -171,12 +179,8 @@ class projeto(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_delay_0, 0), (self.ieee802_11_sync_short_0, 0))
         self.connect((self.blocks_delay_0_0, 0), (self.ieee802_11_sync_long_0, 1))
         self.connect((self.blocks_divide_xx_0, 0), (self.ieee802_11_sync_short_0, 2))
-        self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle2_0, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.fir_filter_xxx_0, 0))
         self.connect((self.blocks_stream_to_vector_1, 0), (self.fft_vxx_0, 0))
-        self.connect((self.blocks_throttle2_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
-        self.connect((self.blocks_throttle2_0, 0), (self.blocks_delay_0, 0))
-        self.connect((self.blocks_throttle2_0, 0), (self.blocks_multiply_xx_0, 1))
         self.connect((self.fft_vxx_0, 0), (self.ieee802_11_frame_equalizer_0, 0))
         self.connect((self.fir_filter_xxx_0, 0), (self.blocks_complex_to_mag_0, 0))
         self.connect((self.fir_filter_xxx_0, 0), (self.ieee802_11_sync_short_0, 1))
@@ -186,6 +190,22 @@ class projeto(gr.top_block, Qt.QWidget):
         self.connect((self.ieee802_11_sync_long_0, 0), (self.blocks_stream_to_vector_1, 0))
         self.connect((self.ieee802_11_sync_short_0, 0), (self.blocks_delay_0_0, 0))
         self.connect((self.ieee802_11_sync_short_0, 0), (self.ieee802_11_sync_long_0, 0))
+        self.connect((self.iio_pluto_source_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
+        self.connect((self.iio_pluto_source_0, 0), (self.blocks_delay_0, 0))
+        self.connect((self.iio_pluto_source_0, 0), (self.blocks_multiply_xx_0, 1))
+
+        ##################################################
+        # Custom code - Configure sweep
+        ##################################################
+        # Acessa o objeto Python via variável global do módulo
+        import projeto_epy_block_0
+        if projeto_epy_block_0._last_instance is not None:
+            sweep_obj = projeto_epy_block_0._last_instance
+            sweep_obj.pluto_source = self.iio_pluto_source_0
+            sweep_obj.set_top_block(self)
+            print("[SWEEP] Configurado com sucesso via variável global!")
+        else:
+            print("[SWEEP ERROR] Instância do bloco não encontrada")
 
 
     def closeEvent(self, event):
@@ -210,19 +230,13 @@ class projeto(gr.top_block, Qt.QWidget):
     def set_threshold(self, threshold):
         self.threshold = threshold
 
-    def get_scan_interval(self):
-        return self.scan_interval
-
-    def set_scan_interval(self, scan_interval):
-        self.scan_interval = scan_interval
-
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.blocks_throttle2_0.set_sample_rate(self.samp_rate)
         self.ieee802_11_frame_equalizer_0.set_bandwidth(self.samp_rate)
+        self.iio_pluto_source_0.set_samplerate(self.samp_rate)
 
     def get_freq(self):
         return self.freq
@@ -231,20 +245,22 @@ class projeto(gr.top_block, Qt.QWidget):
         self.freq = freq
         self._freq_callback(self.freq)
         self.ieee802_11_frame_equalizer_0.set_frequency(self.freq)
+        self.iio_pluto_source_0.set_frequency(int(self.freq))
 
-    def get_chan_est(self):
-        return self.chan_est
+    def get_algorithm(self):
+        return self.algorithm
 
-    def set_chan_est(self, chan_est):
-        self.chan_est = chan_est
-        self._chan_est_callback(self.chan_est)
-        self.ieee802_11_frame_equalizer_0.set_algorithm(self.chan_est)
+    def set_algorithm(self, algorithm):
+        self.algorithm = algorithm
+        self._algorithm_callback(self.algorithm)
+        self.ieee802_11_frame_equalizer_0.set_algorithm(self.algorithm)
 
     def get_PlutoSDR_gain(self):
         return self.PlutoSDR_gain
 
     def set_PlutoSDR_gain(self, PlutoSDR_gain):
         self.PlutoSDR_gain = PlutoSDR_gain
+        self.iio_pluto_source_0.set_gain(0, self.PlutoSDR_gain)
 
 
 
