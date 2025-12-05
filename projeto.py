@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Not titled yet
-# GNU Radio version: 3.10.9.2
+# GNU Radio version: 3.10.12.0
 
 from PyQt5 import Qt
 from gnuradio import qtgui
@@ -28,6 +28,7 @@ from gnuradio import iio
 import foo
 import ieee802_11
 import projeto_epy_block_1 as epy_block_1  # embedded python block
+import threading
 
 
 
@@ -54,7 +55,7 @@ class projeto(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "projeto")
+        self.settings = Qt.QSettings("gnuradio/flowgraphs", "projeto")
 
         try:
             geometry = self.settings.value("geometry")
@@ -62,6 +63,7 @@ class projeto(gr.top_block, Qt.QWidget):
                 self.restoreGeometry(geometry)
         except BaseException as exc:
             print(f"Qt GUI: Could not restore geometry: {str(exc)}", file=sys.stderr)
+        self.flowgraph_started = threading.Event()
 
         ##################################################
         # Variables
@@ -148,7 +150,7 @@ class projeto(gr.top_block, Qt.QWidget):
         self.epy_block_1 = epy_block_1.wifi_info_printer()
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, 64)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/wagner/Desktop/MEEC/CDIG/CDIG-T02-G08/data.pcap', False)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/wireshark.pcap', False)
         self.blocks_file_sink_0.set_unbuffered(True)
         self.blocks_divide_xx_0 = blocks.divide_ff(1)
         self.blocks_delay_0_0 = blocks.delay(gr.sizeof_gr_complex*1, 240)
@@ -188,7 +190,7 @@ class projeto(gr.top_block, Qt.QWidget):
 
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "projeto")
+        self.settings = Qt.QSettings("gnuradio/flowgraphs", "projeto")
         self.settings.setValue("geometry", self.saveGeometry())
         self.stop()
         self.wait()
@@ -244,6 +246,7 @@ def main(top_block_cls=projeto, options=None):
     tb = top_block_cls()
 
     tb.start()
+    tb.flowgraph_started.set()
 
     tb.show()
 
