@@ -32,10 +32,23 @@ import threading
 
 
 def snipfcn_snippet_0(self):
-    ### Sweep python code
+    # Sweep
 
     from PyQt5 import QtCore
-    from PyQt5.QtWidgets import QPushButton, QLabel
+    from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QWidget, QTextEdit
+    import projeto_epy_block_1 as epy_block_1
+
+    # Import matplotlib for graphing
+    try:
+        import matplotlib
+        matplotlib.use('Qt5Agg')
+        from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+        from matplotlib.figure import Figure
+        import matplotlib.pyplot as plt
+        matplotlib_available = True
+    except ImportError:
+        print("[GRAPH] Matplotlib not available. Install with: pip install matplotlib")
+        matplotlib_available = False
 
     # Channel sweep setup
     channels = [
@@ -50,13 +63,128 @@ def snipfcn_snippet_0(self):
     ]
     channel_index = [0]
     sweep_active = [True]
+    sweep_changing = [False]  # Flag to indicate sweep is changing frequency
     tb = self
-    time = 10000
+    time = 60000
 
     # Create status label
     status_label = QLabel(" SWEEP MODE - Scanning all channels...")
     status_label.setStyleSheet("QLabel { background-color: #4CAF50; color: white; padding: 10px; font-weight: bold; font-size: 14px; }")
     tb.top_layout.addWidget(status_label)
+
+    # Create statistics display widgets
+    stats_widget = QWidget()
+    stats_layout = QVBoxLayout()
+
+    activity_label = QLabel("CHANNEL ACTIVITY - No data yet")
+    activity_label.setStyleSheet("QLabel { background-color: #2196F3; color: white; padding: 8px; font-weight: bold; font-size: 13px; }")
+    stats_layout.addWidget(activity_label)
+
+    occupancy_label = QLabel("TOP CHANNELS BY NETWORK COUNT - No data yet")
+    occupancy_label.setStyleSheet("QLabel { background-color: #9C27B0; color: white; padding: 8px; font-weight: bold; font-size: 13px; }")
+    stats_layout.addWidget(occupancy_label)
+
+    rssi_label = QLabel("BEST CHANNELS BY SIGNAL STRENGTH - No data yet")
+    rssi_label.setStyleSheet("QLabel { background-color: #FF5722; color: white; padding: 8px; font-weight: bold; font-size: 13px; }")
+    stats_layout.addWidget(rssi_label)
+
+    stats_widget.setLayout(stats_layout)
+    tb.top_layout.addWidget(stats_widget)
+
+    # Create matplotlib graph widget
+    if matplotlib_available:
+        graph_widget = QWidget()
+        graph_layout = QVBoxLayout()
+
+        graph_label = QLabel("REAL-TIME CHANNEL ANALYSIS")
+        graph_label.setStyleSheet("QLabel { background-color: #607D8B; color: white; padding: 8px; font-weight: bold; font-size: 13px; }")
+        graph_layout.addWidget(graph_label)
+
+        # Create figure with two subplots
+        fig = Figure(figsize=(12, 6), dpi=80)
+        canvas = FigureCanvas(fig)
+
+        ax1 = fig.add_subplot(121)  # Left: Networks per channel
+        ax2 = fig.add_subplot(122)  # Right: Average RSSI per channel
+
+        graph_layout.addWidget(canvas)
+        graph_widget.setLayout(graph_layout)
+        tb.top_layout.addWidget(graph_widget)
+
+        def update_graph():
+            """Update the real-time graphs"""
+            try:
+                stats = epy_block_1.get_channel_stats()
+
+                # Clear previous plots
+                ax1.clear()
+                ax2.clear()
+
+                # Plot 1: Networks per channel
+                if stats['networks_per_channel'] and len(stats['networks_per_channel']) > 0:
+                    channels_list = sorted(stats['networks_per_channel'].keys())
+                    network_counts = [len(stats['networks_per_channel'][ch]) for ch in channels_list]
+
+                    if channels_list and network_counts:
+                        ax1.bar(range(len(channels_list)), network_counts, color='#2196F3', alpha=0.7)
+                        ax1.set_xticks(range(len(channels_list)))
+                        ax1.set_xticklabels([str(ch) for ch in channels_list], rotation=45, ha='right', fontsize=8)
+                        ax1.set_xlabel('Channel', fontweight='bold')
+                        ax1.set_ylabel('Number of Networks', fontweight='bold')
+                        ax1.set_title('Networks Detected per Channel', fontweight='bold', fontsize=11)
+                        ax1.grid(axis='y', alpha=0.3)
+
+                        # Highlight most active channel
+                        if network_counts:
+                            max_idx = network_counts.index(max(network_counts))
+                            ax1.bar(max_idx, network_counts[max_idx], color='#4CAF50', alpha=0.9)
+                else:
+                    # Show "waiting for data" message
+                    ax1.text(0.5, 0.5, 'Waiting for network detections...',
+                            ha='center', va='center', transform=ax1.transAxes, fontsize=12)
+                    ax1.set_title('Networks Detected per Channel', fontweight='bold', fontsize=11)
+
+                # Plot 2: Average RSSI per channel
+                if stats['rssi_per_channel']:
+                    rssi_channels = sorted([ch for ch, rssi_list in stats['rssi_per_channel'].items() if rssi_list])
+
+                    if rssi_channels and len(rssi_channels) > 0:
+                        avg_rssi = [sum(stats['rssi_per_channel'][ch])/len(stats['rssi_per_channel'][ch])
+                                   for ch in rssi_channels]
+
+                        colors = ['#4CAF50' if rssi > -60 else '#FF9800' if rssi > -75 else '#F44336'
+                                 for rssi in avg_rssi]
+
+                        ax2.bar(range(len(rssi_channels)), avg_rssi, color=colors, alpha=0.7)
+                        ax2.set_xticks(range(len(rssi_channels)))
+                        ax2.set_xticklabels([str(ch) for ch in rssi_channels], rotation=45, ha='right', fontsize=8)
+                        ax2.set_xlabel('Channel', fontweight='bold')
+                        ax2.set_ylabel('Average RSSI (dBm)', fontweight='bold')
+                        ax2.set_title('Signal Strength per Channel', fontweight='bold', fontsize=11)
+                        ax2.grid(axis='y', alpha=0.3)
+                        ax2.axhline(y=-60, color='green', linestyle='--', alpha=0.5, linewidth=1, label='Excellent')
+                        ax2.axhline(y=-75, color='orange', linestyle='--', alpha=0.5, linewidth=1, label='Good')
+                        ax2.legend(fontsize=8, loc='lower right')
+                    else:
+                        # Show "waiting for data" message
+                        ax2.text(0.5, 0.5, 'Waiting for RSSI data...',
+                                ha='center', va='center', transform=ax2.transAxes, fontsize=12)
+                        ax2.set_title('Signal Strength per Channel', fontweight='bold', fontsize=11)
+                else:
+                    # Show "waiting for data" message
+                    ax2.text(0.5, 0.5, 'Waiting for RSSI data...',
+                            ha='center', va='center', transform=ax2.transAxes, fontsize=12)
+                    ax2.set_title('Signal Strength per Channel', fontweight='bold', fontsize=11)
+
+                fig.tight_layout()
+                canvas.draw()
+            except Exception as e:
+                # Silently handle errors when no data is available yet
+                pass
+
+        # Store update function and canvas for later use
+        tb._graph_update = update_graph
+        tb._graph_canvas = canvas
 
     # Save original set_freq
     original_set_freq = tb.set_freq
@@ -70,7 +198,8 @@ def snipfcn_snippet_0(self):
             status_label.setStyleSheet("QLabel { background-color: #FF9800; color: white; padding: 10px; font-weight: bold; font-size: 14px; }")
 
     def custom_set_freq(freq):
-        if sweep_active[0]:
+        # Only pause if this is a manual change (not from sweep itself)
+        if sweep_active[0] and not sweep_changing[0]:
             sweep_active[0] = False
             tb._sweep_timer.stop()
             update_status_label()
@@ -80,14 +209,48 @@ def snipfcn_snippet_0(self):
 
     tb.set_freq = custom_set_freq
 
+    def update_statistics_display():
+        """Update the GUI with latest statistics"""
+        try:
+            # Get top channels by network count
+            top_channels = epy_block_1.get_top_channels(5)
+            if top_channels:
+                most_active_ch, most_active_count = top_channels[0]
+                activity_label.setText(f" MOST ACTIVE CHANNEL: {most_active_ch} with {most_active_count} networks")
+
+                occupancy_text = "TOP CHANNELS BY NETWORK COUNT:\n"
+                for i, (ch, count) in enumerate(top_channels, 1):
+                    occupancy_text += f"  {i}. Channel {ch}: {count} networks\n"
+                occupancy_label.setText(occupancy_text.strip())
+
+            # Get best channels by RSSI
+            best_rssi_channels = epy_block_1.get_best_channels_by_rssi(5)
+            if best_rssi_channels:
+                rssi_text = " BEST CHANNELS BY SIGNAL STRENGTH:\n"
+                for i, (ch, avg_rssi, sample_count) in enumerate(best_rssi_channels, 1):
+                    rssi_text += f"  {i}. Channel {ch}: {avg_rssi:.1f} dBm avg ({sample_count} samples)\n"
+                rssi_label.setText(rssi_text.strip())
+
+            # Update graph if matplotlib is available
+            if matplotlib_available and hasattr(tb, '_graph_update'):
+                tb._graph_update()
+        except Exception as e:
+            print(f"[STATS] Error updating display: {e}")
+
     def sweep_channel():
         if sweep_active[0]:
             try:
                 print(f"[SWEEP] Switching to channel {channel_index[0]+1}/{len(channels)}...")
+                sweep_changing[0] = True  # Set flag before changing
                 original_set_freq(channels[channel_index[0]])
+                sweep_changing[0] = False  # Clear flag after changing
                 print(f"[SWEEP] Now at: {channels[channel_index[0]]/1e9:.3f} GHz")
                 channel_index[0] = (channel_index[0] + 1) % len(channels)
+
+                # Update statistics display
+                update_statistics_display()
             except Exception as e:
+                sweep_changing[0] = False  # Clear flag on error
                 print(f"[SWEEP] ERROR: {e}")
 
     def resume_sweep():
@@ -103,6 +266,11 @@ def snipfcn_snippet_0(self):
     resume_button.clicked.connect(resume_sweep)
     tb.top_layout.addWidget(resume_button)
 
+    # Create statistics update timer (updates every 2 seconds)
+    tb._stats_timer = QtCore.QTimer(tb)
+    tb._stats_timer.timeout.connect(update_statistics_display)
+    tb._stats_timer.start(2000)
+
     print("[SWEEP] Starting automatic WiFi channel sweep...")
     print(f"[SWEEP] Initial channel: {tb.freq / 1e9:.3f} GHz")
     print("[SWEEP] Use dropdown to pause or 'Resume Sweep' button to continue.")
@@ -110,6 +278,7 @@ def snipfcn_snippet_0(self):
     tb._sweep_timer.timeout.connect(sweep_channel)
     tb._sweep_timer.start(time)
     print(f"[SWEEP] Timer started! Changing channel every {time / 1000} seconds...")
+    print("[STATS] Statistics display updating every 2 seconds...")
 
 def snipfcn_snippet_0_0(self):
     # Snippet for wireshark
