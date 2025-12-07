@@ -47,8 +47,9 @@ The receiver uses the following signal processing chain:
 <img src="images/gnuradio flow.png">
 
 ## Results
-After running for some time with automatic sweep we got these frames
+After running for some time with automatic sweep we got these results
 
+<img src="images/UI results.png">
 <img src="images/wireshark auto sweep.png">
 
 ## Installation

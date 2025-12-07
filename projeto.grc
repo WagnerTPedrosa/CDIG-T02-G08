@@ -77,14 +77,15 @@ blocks:
     labels: '[''CH1(2.412GHz)'', ''CH2(2.417GHz)'', ''CH3(2.422GHz)'', ''CH4(2.427GHz)'',
       ''CH5(2.432GHz)'', ''CH6(2.437GHz)'', ''CH7(2.442GHz)'', ''CH8(2.447GHz)'',
       ''CH9(2.452GHz)'', ''CH10(2.457GHz)'', ''CH11(2.462GHz)'', ''CH12(2.467GHz)'',
-      ''CH13(2.472GHz)'', ''CH14(2.484GHz)'', ''CH32(5.16e9)'', ''CH36(5.18e9)'',
-      ''CH40(5.20e9)'', ''CH44(5.22e9)'', ''CH48(5.24e9)'', ''CH52(5.26e9)'', ''CH56(5.28e9)'',
-      ''CH60(5.30e9)'', ''CH64(5.32e9)'', ''CH68(5.34e9)'', ''CH96(5.48e9)'', ''CH100(5.50e9)'',
-      ''CH104(5.52e9)'', ''CH108(5.54e9)'', ''CH112(5.56e9)'', ''CH116(5.58e9)'',
-      ''CH120(5.60e9)'', ''CH124(5.62e9)'', ''CH128(5.64e9)'', ''CH132(5.66e9)'',
-      ''CH136(5.68e9)'', ''CH140(5.70e9)'', ''CH144(5.72e9)'', ''CH149(5.745e9)'',
-      ''CH153(5.765e9)'', ''CH157(5.785e9)'', ''CH161(5.805e9)'', ''CH165(5.825e9)'',
-      ''CH169(5.845e9)'', ''CH173(5.865e9)'', ''CH177(5.885e9)'']'
+      ''CH13(2.472GHz)'', ''CH14(2.484GHz)'', ''CH32(5.16GHz)'', ''CH36(5.18GHz)'',
+      ''CH40(5.20GHz)'', ''CH44(5.22GHz)'', ''CH48(5.24GHz)'', ''CH52(5.26GHz)'',
+      ''CH56(5.28GHz)'', ''CH60(5.30GHz)'', ''CH64(5.32GHz)'', ''CH68(5.34GHz)'',
+      ''CH96(5.48GHz)'', ''CH100(5.50GHz)'', ''CH104(5.52GHz)'', ''CH108(5.54GHz)'',
+      ''CH112(5.56GHz)'', ''CH116(5.58GHz)'', ''CH120(5.60GHz)'', ''CH124(5.62GHz)'',
+      ''CH128(5.64GHz)'', ''CH132(5.66GHz)'', ''CH136(5.68GHz)'', ''CH140(5.70GHz)'',
+      ''CH144(5.72GHz)'', ''CH149(5.745GHz)'', ''CH153(5.765GHz)'', ''CH157(5.785GHz)'',
+      ''CH161(5.805GHz)'', ''CH165(5.825GHz)'', ''CH169(5.845GHz)'', ''CH173(5.865GHz)'',
+      ''CH177(5.885GHz)'']'
     num_opts: '0'
     option0: '0'
     option1: '1'
@@ -106,7 +107,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [176, 8.0]
+    coordinate: [384, 8.0]
     rotation: 0
     state: enabled
 - name: samp_rate
@@ -118,7 +119,28 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [352, 8.0]
+    coordinate: [176, 88.0]
+    rotation: 0
+    state: enabled
+- name: sweep_time
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Channel Sweeper time
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: int
+    start: '60000'
+    step: '30000'
+    stop: '300000'
+    value: '120000'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [904, 8.0]
     rotation: 0
     state: enabled
 - name: threshold
@@ -151,7 +173,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [440, 8.0]
+    coordinate: [168, 16.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_0
@@ -660,155 +682,243 @@ blocks:
   id: snippet
   parameters:
     alias: ''
-    code: "# Sweep \n\nfrom PyQt5 import QtCore\nfrom PyQt5.QtWidgets import QPushButton,\
-      \ QLabel, QVBoxLayout, QHBoxLayout, QWidget, QTextEdit\nimport projeto_epy_block_1\
-      \ as epy_block_1\n\n# Import matplotlib for graphing\ntry:\n    import matplotlib\n\
-      \    matplotlib.use('Qt5Agg')\n    from matplotlib.backends.backend_qt5agg import\
-      \ FigureCanvasQTAgg as FigureCanvas\n    from matplotlib.figure import Figure\n\
-      \    import matplotlib.pyplot as plt\n    matplotlib_available = True\nexcept\
-      \ ImportError:\n    print(\"[GRAPH] Matplotlib not available. Install with:\
-      \ pip install matplotlib\")\n    matplotlib_available = False\n\n# Channel sweep\
-      \ setup\nchannels = [\n    2412000000, 2417000000, 2422000000, 2427000000, 2432000000,\
-      \ 2437000000,\n    2442000000, 2447000000, 2452000000, 2457000000, 2462000000,\
-      \ 2467000000,\n    2472000000, 2484000000, 5160000000, 5180000000, 5200000000,\
-      \ 5220000000,\n    5240000000, 5260000000, 5280000000, 5300000000, 5320000000,\
-      \ 5340000000,\n    5480000000, 5500000000, 5520000000, 5540000000, 5560000000,\
-      \ 5580000000,\n    5600000000, 5620000000, 5640000000, 5660000000, 5680000000,\
-      \ 5700000000,\n    5720000000, 5745000000, 5765000000, 5785000000, 5805000000,\
-      \ 5825000000,\n    5845000000, 5865000000, 5885000000\n]\nchannel_index = [0]\n\
-      sweep_active = [True]\nsweep_changing = [False]  # Flag to indicate sweep is\
-      \ changing frequency\n\ntb = self\ntb.resize(1200, 700)  # Ajuste o tamanho\
-      \ da janela principal conforme necess\xE1rio\ntime = 60000\n\n# Create status\
-      \ label\nstatus_label = QLabel(\" SWEEP MODE - Scanning all channels...\")\n\
-      status_label.setStyleSheet(\"QLabel { background-color: #4CAF50; color: white;\
-      \ padding: 10px; font-weight: bold; font-size: 14px; }\")\ntb.top_layout.addWidget(status_label)\n\
-      \n# Create statistics display widgets\nstats_widget = QWidget()\n\nstats_layout\
+    code: "# Snippet for the Sweep\n\nfrom PyQt5 import QtCore\nfrom PyQt5.QtWidgets\
+      \ import (\n    QPushButton, QLabel, QVBoxLayout, QHBoxLayout,\n    QWidget,\
+      \ QTextEdit, QSizePolicy\n)\nimport projeto_epy_block_1 as epy_block_1\n\n#\
+      \ Import matplotlib for graphing\ntry:\n    import matplotlib\n    matplotlib.use('Qt5Agg')\n\
+      \    from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas\n\
+      \    from matplotlib.figure import Figure\n    import matplotlib.pyplot as plt\n\
+      \    matplotlib_available = True\nexcept ImportError:\n    print(\"[GRAPH] Matplotlib\
+      \ not available. Install with: pip install matplotlib\")\n    matplotlib_available\
+      \ = False\n\n# Channel sweep setup\nchannels = [\n    2412000000, 2417000000,\
+      \ 2422000000, 2427000000, 2432000000, 2437000000,\n    2442000000, 2447000000,\
+      \ 2452000000, 2457000000, 2462000000, 2467000000,\n    2472000000, 2484000000,\
+      \ 5160000000, 5180000000, 5200000000, 5220000000,\n    5240000000, 5260000000,\
+      \ 5280000000, 5300000000, 5320000000, 5340000000,\n    5480000000, 5500000000,\
+      \ 5520000000, 5540000000, 5560000000, 5580000000,\n    5600000000, 5620000000,\
+      \ 5640000000, 5660000000, 5680000000, 5700000000,\n    5720000000, 5745000000,\
+      \ 5765000000, 5785000000, 5805000000, 5825000000,\n    5845000000, 5865000000,\
+      \ 5885000000\n]\nchannel_index = [0]\nsweep_active = [True]\nsweep_changing\
+      \ = [False]  # Flag to indicate sweep is changing frequency\n\ntb = self\ntb.resize(1200,\
+      \ 700)\n\n# Create a main widget and layout for all UI elements\nmain_widget\
+      \ = QWidget()\nmain_layout = QVBoxLayout()\nmain_layout.setContentsMargins(0,\
+      \ 0, 0, 0)\nmain_layout.setSpacing(0)\nmain_widget.setLayout(main_layout)\n\n\
+      # Store last sweep_time value\ntime = tb.sweep_time\nlast_sweep_time = [time]\n\
+      \n# Function to update sweep timer interval if sweep_time changes\ndef periodic_sweep_time_check():\n\
+      \    current_sweep_time = tb.sweep_time\n    if current_sweep_time != last_sweep_time[0]:\n\
+      \        last_sweep_time[0] = current_sweep_time\n        global time\n    \
+      \    time = current_sweep_time\n        if hasattr(tb, '_sweep_timer'):\n  \
+      \          tb._sweep_timer.stop()\n            tb._sweep_timer.start(time)\n\
+      \        print(f\"\\n[SWEEP] Sweep interval updated to {time // 1000} seconds.\"\
+      )\n\n# Create a timer to check sweep_time every second\ntb._sweep_time_check_timer\
+      \ = QtCore.QTimer(tb)\ntb._sweep_time_check_timer.timeout.connect(periodic_sweep_time_check)\n\
+      tb._sweep_time_check_timer.start(1000)\n\n\n# Create status label\nstatus_label\
+      \ = QLabel(\" SWEEP MODE - Scanning all channels...\")\nstatus_label.setStyleSheet(\n\
+      \    \"QLabel { background-color: #4CAF50; color: white; padding: 10px; \"\n\
+      \    \"font-weight: bold; font-size: 14px; }\"\n)\nmain_layout.addWidget(status_label)\n\
+      \n# Create statistics display widgets\nstats_widget = QWidget()\nstats_layout\
       \ = QVBoxLayout()\nstats_layout.setContentsMargins(5, 5, 5, 5)\nstats_layout.setSpacing(5)\n\
-      \nactivity_label = QLabel(\"CHANNEL ACTIVITY - No data yet\")\nactivity_label.setStyleSheet(\"\
-      QLabel { background-color: #2196F3; color: white; padding: 4px; font-weight:\
-      \ bold; font-size: 11px; }\")\nstats_layout.addWidget(activity_label)\n\noccupancy_label\
-      \ = QLabel(\"TOP CHANNELS BY NETWORK COUNT - No data yet\")\noccupancy_label.setStyleSheet(\"\
-      QLabel { background-color: #9C27B0; color: white; padding: 4px; font-weight:\
-      \ bold; font-size: 11px; }\")\nstats_layout.addWidget(occupancy_label)\n\nrssi_label\
-      \ = QLabel(\"BEST CHANNELS BY SIGNAL STRENGTH - No data yet\")\nrssi_label.setStyleSheet(\"\
-      QLabel { background-color: #FF5722; color: white; padding: 4px; font-weight:\
-      \ bold; font-size: 11px; }\")\nstats_layout.addWidget(rssi_label)\n\nstats_widget.setLayout(stats_layout)\n\
-      tb.top_layout.addWidget(stats_widget)\n\n# Create matplotlib graph widget\n\n\
-      if matplotlib_available:\n    graph_widget = QWidget()\n    graph_layout = QVBoxLayout()\n\
+      \n# Label showing current channel / frequency\ncurrent_channel_label = QLabel(\"\
+      \ CURRENT CHANNEL: initializing...\")\ncurrent_channel_label.setStyleSheet(\n\
+      \    \"QLabel { background-color: #455A64; color: white; padding: 4px; \"\n\
+      \    \"font-weight: bold; font-size: 11px; }\"\n)\nstats_layout.addWidget(current_channel_label)\n\
+      \nactivity_label = QLabel(\"CHANNEL ACTIVITY - No data yet\")\nactivity_label.setStyleSheet(\n\
+      \    \"QLabel { background-color: #2196F3; color: white; padding: 4px; \"\n\
+      \    \"font-weight: bold; font-size: 11px; }\"\n)\nstats_layout.addWidget(activity_label)\n\
+      \noccupancy_label = QLabel(\"TOP CHANNELS BY NETWORK COUNT - No data yet\")\n\
+      occupancy_label.setStyleSheet(\n    \"QLabel { background-color: #9C27B0; color:\
+      \ white; padding: 4px; \"\n    \"font-weight: bold; font-size: 11px; }\"\n)\n\
+      stats_layout.addWidget(occupancy_label)\n\nrssi_label = QLabel(\"BEST CHANNELS\
+      \ BY SIGNAL STRENGTH - No data yet\")\nrssi_label.setStyleSheet(\n    \"QLabel\
+      \ { background-color: #FF5722; color: white; padding: 4px; \"\n    \"font-weight:\
+      \ bold; font-size: 11px; }\"\n)\nstats_layout.addWidget(rssi_label)\n\nstats_widget.setLayout(stats_layout)\n\
+      main_layout.addWidget(stats_widget)\n\n# Create matplotlib graph widget\nif\
+      \ matplotlib_available:\n    graph_widget = QWidget()\n    graph_layout = QVBoxLayout()\n\
       \    graph_layout.setContentsMargins(5, 5, 5, 5)\n    graph_layout.setSpacing(5)\n\
-      \n    graph_label = QLabel(\"REAL-TIME CHANNEL ANALYSIS\")\n    graph_label.setStyleSheet(\"\
-      QLabel { background-color: #607D8B; color: white; padding: 4px; font-weight:\
-      \ bold; font-size: 11px; }\")\n    graph_layout.addWidget(graph_label)\n\n \
-      \   # Create figure with two subplots\n    fig = Figure(figsize=(10, 3.5), dpi=80)\n\
-      \    canvas = FigureCanvas(fig)\n\n    ax1 = fig.add_subplot(121)  # Left: Networks\
-      \ per channel\n    ax2 = fig.add_subplot(122)  # Right: Average RSSI per channel\n\
+      \n    graph_label = QLabel(\"REAL-TIME CHANNEL ANALYSIS\")\n    graph_label.setStyleSheet(\n\
+      \        \"QLabel { background-color: #607D8B; color: white; padding: 4px; \"\
+      \n        \"font-weight: bold; font-size: 11px; }\"\n    )\n    graph_layout.addWidget(graph_label)\n\
+      \n    # Create figure with two subplots\n    fig = Figure(figsize=(10, 3.5),\
+      \ dpi=80)\n    canvas = FigureCanvas(fig)\n\n    # IMPORTANT: evitar que o gr\xE1\
+      fico desapare\xE7a ao encolher a janela\n    canvas.setSizePolicy(QSizePolicy.Expanding,\
+      \ QSizePolicy.Expanding)\n    graph_widget.setSizePolicy(QSizePolicy.Expanding,\
+      \ QSizePolicy.Expanding)\n    graph_widget.setMinimumHeight(250)  # ajusta se\
+      \ quiseres maior/menor\n\n    ax1 = fig.add_subplot(121)  # Left: Networks per\
+      \ channel\n    ax2 = fig.add_subplot(122)  # Right: Average RSSI per channel\n\
       \n    graph_layout.addWidget(canvas)\n    graph_widget.setLayout(graph_layout)\n\
-      \    tb.top_layout.addWidget(graph_widget)\n\n    def update_graph():\n    \
-      \    \"\"\"Update the real-time graphs\"\"\"\n        try:\n            stats\
+      \    main_layout.addWidget(graph_widget)\n\n    def update_graph():\n      \
+      \  \"\"\"Update the real-time graphs\"\"\"\n        try:\n            stats\
       \ = epy_block_1.get_channel_stats()\n\n            # Clear previous plots\n\
       \            ax1.clear()\n            ax2.clear()\n\n            # Plot 1: Networks\
       \ per channel\n            if stats['networks_per_channel'] and len(stats['networks_per_channel'])\
       \ > 0:\n                channels_list = sorted(stats['networks_per_channel'].keys())\n\
-      \                network_counts = [len(stats['networks_per_channel'][ch]) for\
-      \ ch in channels_list]\n\n                if channels_list and network_counts:\n\
-      \                    ax1.bar(range(len(channels_list)), network_counts, color='#2196F3',\
-      \ alpha=0.7)\n                    ax1.set_xticks(range(len(channels_list)))\n\
-      \                    ax1.set_xticklabels([str(ch) for ch in channels_list],\
-      \ rotation=45, ha='right', fontsize=8)\n                    ax1.set_xlabel('Channel',\
-      \ fontweight='bold')\n                    ax1.set_ylabel('Number of Networks',\
-      \ fontweight='bold')\n                    ax1.set_title('Networks Detected per\
-      \ Channel', fontweight='bold', fontsize=11)\n                    ax1.grid(axis='y',\
-      \ alpha=0.3)\n\n                    # Highlight most active channel\n      \
-      \              if network_counts:\n                        max_idx = network_counts.index(max(network_counts))\n\
-      \                        ax1.bar(max_idx, network_counts[max_idx], color='#4CAF50',\
-      \ alpha=0.9)\n            else:\n                # Show \"waiting for data\"\
-      \ message\n                ax1.text(0.5, 0.5, 'Waiting for network detections...',\
-      \ \n                        ha='center', va='center', transform=ax1.transAxes,\
-      \ fontsize=12)\n                ax1.set_title('Networks Detected per Channel',\
-      \ fontweight='bold', fontsize=11)\n\n            # Plot 2: Average RSSI per\
-      \ channel\n            if stats['rssi_per_channel']:\n                rssi_channels\
-      \ = sorted([ch for ch, rssi_list in stats['rssi_per_channel'].items() if rssi_list])\n\
-      \                \n                if rssi_channels and len(rssi_channels) >\
-      \ 0:\n                    avg_rssi = [sum(stats['rssi_per_channel'][ch])/len(stats['rssi_per_channel'][ch])\n\
-      \                               for ch in rssi_channels]\n\n               \
-      \     colors = ['#4CAF50' if rssi > -60 else '#FF9800' if rssi > -75 else '#F44336'\n\
-      \                             for rssi in avg_rssi]\n\n                    ax2.bar(range(len(rssi_channels)),\
-      \ avg_rssi, color=colors, alpha=0.7)\n                    ax2.set_xticks(range(len(rssi_channels)))\n\
-      \                    ax2.set_xticklabels([str(ch) for ch in rssi_channels],\
-      \ rotation=45, ha='right', fontsize=8)\n                    ax2.set_xlabel('Channel',\
+      \                network_counts = [\n                    len(stats['networks_per_channel'][ch])\n\
+      \                    for ch in channels_list\n                ]\n\n        \
+      \        if channels_list and network_counts:\n                    ax1.bar(range(len(channels_list)),\
+      \ network_counts,\n                            color='#2196F3', alpha=0.7)\n\
+      \                    ax1.set_xticks(range(len(channels_list)))\n           \
+      \         ax1.set_xticklabels(\n                        [str(ch) for ch in channels_list],\n\
+      \                        rotation=45, ha='right', fontsize=8\n             \
+      \       )\n                    ax1.set_xlabel('Channel', fontweight='bold')\n\
+      \                    ax1.set_ylabel('Number of Networks', fontweight='bold')\n\
+      \                    ax1.set_title('Networks Detected per Channel',\n      \
+      \                              fontweight='bold', fontsize=11)\n           \
+      \         ax1.grid(axis='y', alpha=0.3)\n\n                    # Highlight most\
+      \ active channel\n                    if network_counts:\n                 \
+      \       max_idx = network_counts.index(max(network_counts))\n              \
+      \          ax1.bar(max_idx, network_counts[max_idx],\n                     \
+      \           color='#4CAF50', alpha=0.9)\n            else:\n               \
+      \ ax1.text(0.5, 0.5, 'Waiting for network detections...',\n                \
+      \            ha='center', va='center', transform=ax1.transAxes,\n          \
+      \                  fontsize=12)\n                ax1.set_title('Networks Detected\
+      \ per Channel',\n                                fontweight='bold', fontsize=11)\n\
+      \n            # Plot 2: Average RSSI per channel\n            if stats['rssi_per_channel']:\n\
+      \                rssi_channels = sorted(\n                    [ch for ch, rssi_list\
+      \ in stats['rssi_per_channel'].items()\n                        if rssi_list]\n\
+      \                )\n\n                if rssi_channels and len(rssi_channels)\
+      \ > 0:\n                    avg_rssi = [\n                        sum(stats['rssi_per_channel'][ch])\
+      \ /\n                        len(stats['rssi_per_channel'][ch])\n          \
+      \              for ch in rssi_channels\n                    ]\n\n          \
+      \          colors = [\n                        '#4CAF50' if rssi > -60\n   \
+      \                     else '#FF9800' if rssi > -75\n                       \
+      \ else '#F44336'\n                        for rssi in avg_rssi\n           \
+      \         ]\n\n                    ax2.bar(range(len(rssi_channels)), avg_rssi,\n\
+      \                            color=colors, alpha=0.7)\n                    ax2.set_xticks(range(len(rssi_channels)))\n\
+      \                    ax2.set_xticklabels(\n                        [str(ch)\
+      \ for ch in rssi_channels],\n                        rotation=45, ha='right',\
+      \ fontsize=8\n                    )\n                    ax2.set_xlabel('Channel',\
       \ fontweight='bold')\n                    ax2.set_ylabel('Average RSSI (dBm)',\
       \ fontweight='bold')\n                    ax2.set_title('Signal Strength per\
-      \ Channel', fontweight='bold', fontsize=11)\n                    ax2.grid(axis='y',\
-      \ alpha=0.3)\n                    ax2.axhline(y=-60, color='green', linestyle='--',\
-      \ alpha=0.5, linewidth=1, label='Excellent')\n                    ax2.axhline(y=-75,\
-      \ color='orange', linestyle='--', alpha=0.5, linewidth=1, label='Good')\n  \
-      \                  ax2.legend(fontsize=8, loc='lower right')\n             \
-      \   else:\n                    # Show \"waiting for data\" message\n       \
-      \             ax2.text(0.5, 0.5, 'Waiting for RSSI data...', \n            \
-      \                ha='center', va='center', transform=ax2.transAxes, fontsize=12)\n\
-      \                    ax2.set_title('Signal Strength per Channel', fontweight='bold',\
-      \ fontsize=11)\n            else:\n                # Show \"waiting for data\"\
-      \ message\n                ax2.text(0.5, 0.5, 'Waiting for RSSI data...', \n\
-      \                        ha='center', va='center', transform=ax2.transAxes,\
-      \ fontsize=12)\n                ax2.set_title('Signal Strength per Channel',\
-      \ fontweight='bold', fontsize=11)\n\n            fig.tight_layout()\n      \
-      \      fig.subplots_adjust(top=0.9, bottom=0.1)\n            canvas.draw()\n\
-      \        except Exception as e:\n            # Silently handle errors when no\
-      \ data is available yet\n            pass\n\n    # Store update function and\
-      \ canvas for later use\n    tb._graph_update = update_graph\n    tb._graph_canvas\
-      \ = canvas\n\n# Save original set_freq\noriginal_set_freq = tb.set_freq\n\n\
-      def update_status_label():\n    if sweep_active[0]:\n        status_label.setText(\"\
-      \ SWEEP MODE - Scanning all channels...\")\n        status_label.setStyleSheet(\"\
-      QLabel { background-color: #4CAF50; color: white; padding: 10px; font-weight:\
-      \ bold; font-size: 14px; }\")\n    else:\n        status_label.setText(\" MANUAL\
-      \ MODE - Fixed channel selected\")\n        status_label.setStyleSheet(\"QLabel\
-      \ { background-color: #FF9800; color: white; padding: 10px; font-weight: bold;\
-      \ font-size: 14px; }\")\n\ndef custom_set_freq(freq):\n    # Only pause if this\
-      \ is a manual change (not from sweep itself)\n    if sweep_active[0] and not\
-      \ sweep_changing[0]:\n        sweep_active[0] = False\n        tb._sweep_timer.stop()\n\
-      \        update_status_label()\n        print(f\"[SWEEP] Paused! Manual change\
-      \ detected.\")\n        print(\"[SWEEP] Click 'Resume Sweep' button to continue.\"\
-      )\n    original_set_freq(freq)\n\ntb.set_freq = custom_set_freq\n\ndef update_statistics_display():\n\
-      \    \"\"\"Update the GUI with latest statistics\"\"\"\n    try:\n        #\
-      \ Get top channels by network count\n        top_channels = epy_block_1.get_top_channels(5)\n\
-      \        if top_channels:\n            most_active_ch, most_active_count = top_channels[0]\n\
-      \            activity_label.setText(f\" MOST ACTIVE CHANNEL: {most_active_ch}\
-      \ with {most_active_count} networks\")\n\n            occupancy_text = \"TOP\
-      \ CHANNELS BY NETWORK COUNT:\\n\"\n            for i, (ch, count) in enumerate(top_channels,\
-      \ 1):\n                occupancy_text += f\"  {i}. Channel {ch}: {count} networks\\\
-      n\"\n            occupancy_label.setText(occupancy_text.strip())\n\n       \
-      \ # Get best channels by RSSI\n        best_rssi_channels = epy_block_1.get_best_channels_by_rssi(5)\n\
+      \ Channel',\n                                    fontweight='bold', fontsize=11)\n\
+      \                    ax2.grid(axis='y', alpha=0.3)\n                    ax2.axhline(y=-60,\
+      \ color='green', linestyle='--',\n                                alpha=0.5,\
+      \ linewidth=1, label='Excellent')\n                    ax2.axhline(y=-75, color='orange',\
+      \ linestyle='--',\n                                alpha=0.5, linewidth=1, label='Good')\n\
+      \                    ax2.legend(fontsize=8, loc='lower right')\n           \
+      \     else:\n                    ax2.text(0.5, 0.5, 'Waiting for RSSI data...',\n\
+      \                                ha='center', va='center', transform=ax2.transAxes,\n\
+      \                                fontsize=12)\n                    ax2.set_title('Signal\
+      \ Strength per Channel',\n                                    fontweight='bold',\
+      \ fontsize=11)\n            else:\n                ax2.text(0.5, 0.5, 'Waiting\
+      \ for RSSI data...',\n                            ha='center', va='center',\
+      \ transform=ax2.transAxes,\n                            fontsize=12)\n     \
+      \           ax2.set_title('Signal Strength per Channel',\n                 \
+      \               fontweight='bold', fontsize=11)\n\n            fig.tight_layout()\n\
+      \            fig.subplots_adjust(top=0.9, bottom=0.1)\n            canvas.draw()\n\
+      \        except Exception:\n            # Silently handle errors when no data\
+      \ is available yet\n            pass\n\n    # Store update function and canvas\
+      \ for later use\n    tb._graph_update = update_graph\n    tb._graph_canvas =\
+      \ canvas\n\n# Save original set_freq\noriginal_set_freq = tb.set_freq\n\ndef\
+      \ update_status_label():\n    if sweep_active[0]:\n        status_label.setText(\"\
+      \ SWEEP MODE - Scanning all channels...\")\n        status_label.setStyleSheet(\n\
+      \            \"QLabel { background-color: #4CAF50; color: white; \"\n      \
+      \      \"padding: 10px; font-weight: bold; font-size: 14px; }\"\n        )\n\
+      \    else:\n        status_label.setText(\" MANUAL MODE - Fixed channel selected\"\
+      )\n        status_label.setStyleSheet(\n            \"QLabel { background-color:\
+      \ #FF9800; color: white; \"\n            \"padding: 10px; font-weight: bold;\
+      \ font-size: 14px; }\"\n        )\n\n# --- Wi-Fi channel helper ---\n\ndef freq_to_wifi_channel(freq_hz):\n\
+      \    \"\"\"\n    Convert frequency in Hz to Wi-Fi channel number.\n    Handles:\n\
+      \        - 2.4 GHz band (1\u201314)\n        - 5 GHz band using channel = (f_MHz\
+      \ - 5000) / 5\n    \"\"\"\n    try:\n        f_mhz = float(freq_hz) / 1e6\n\
+      \    except Exception:\n        return None\n\n    # 2.4 GHz band\n    if 2412\
+      \ <= f_mhz <= 2472:\n        ch = int(round((f_mhz - 2412) / 5)) + 1\n     \
+      \   return ch\n    if abs(f_mhz - 2484) < 1:  # Channel 14 special case\n  \
+      \      return 14\n\n    # 5 GHz band: standard formula\n    if 5000 <= f_mhz\
+      \ <= 5900:\n        ch = int(round((f_mhz - 5000) / 5))\n        return ch\n\
+      \n    return None\n\n# Helper to update the \"CURRENT CHANNEL\" label\ndef set_current_channel_label_from_freq(freq):\n\
+      \    try:\n        f = float(freq)\n        freq_ghz = f / 1e9\n        f_int\
+      \ = int(f)\n        wifi_ch = freq_to_wifi_channel(f)\n\n        if f_int in\
+      \ channels:\n            idx = channels.index(f_int)\n            if wifi_ch\
+      \ is not None:\n                current_channel_label.setText(\n           \
+      \         f\" CURRENT CHANNEL: Wi-Fi ch {wifi_ch}  \"\n                    f\"\
+      ({freq_ghz:.3f} GHz)\"\n                )\n            else:\n             \
+      \   current_channel_label.setText(\n                    f\" CURRENT CHANNEL:\
+      \ list {idx+1}/{len(channels)}  \"\n                    f\"({freq_ghz:.3f} GHz,\
+      \ no Wi-Fi ch)\"\n                )\n        else:\n            # Manual freq,\
+      \ not exactly one of the sweep channels\n            if wifi_ch is not None:\n\
+      \                current_channel_label.setText(\n                    f\" CURRENT\
+      \ CHANNEL: manual Wi-Fi ch {wifi_ch}  \"\n                    f\"({freq_ghz:.3f}\
+      \ GHz, not in sweep list)\"\n                )\n            else:\n        \
+      \        current_channel_label.setText(\n                    f\" CURRENT CHANNEL:\
+      \ manual {freq_ghz:.3f} GHz \"\n                    f\"(not in sweep list, no\
+      \ Wi-Fi ch)\"\n                )\n    except Exception:\n        current_channel_label.setText(\"\
+      \ CURRENT CHANNEL: unknown\")\n\ndef custom_set_freq(freq):\n    # Only treat\
+      \ as manual if sweep is active and this isn't a sweep-driven change\n    if\
+      \ sweep_active[0] and not sweep_changing[0]:\n        # Try to align sweep with\
+      \ the manual frequency\n        try:\n            current_freq = int(freq)\n\
+      \            if current_freq in channels:\n                idx = channels.index(current_freq)\n\
+      \                channel_index[0] = (idx + 1) % len(channels)\n            \
+      \    print(\n                    f\"\\n[SWEEP] Next sweep step will continue\
+      \ after list \"\n                    f\"channel {idx+1}/{len(channels)}.\"\n\
+      \                )\n            else:\n                print(\n            \
+      \        f\"\\n[SWEEP] Manual frequency {current_freq} not in sweep \"\n   \
+      \                 f\"channel list; leaving index as-is.\"\n                )\n\
+      \        except Exception as e:\n            print(f\"\\n[SWEEP] Could not map\
+      \ manual freq to channel index: {e}\")\n\n        sweep_active[0] = False\n\
+      \        tb._sweep_timer.stop()\n        update_status_label()\n        print(\"\
+      \\n[SWEEP] Paused! Manual change detected.\")\n        print(\"\\n[SWEEP] Click\
+      \ 'Resume Sweep' button to continue.\")\n\n    # Apply frequency change\n  \
+      \  original_set_freq(freq)\n    # Update on-screen current channel info\n  \
+      \  set_current_channel_label_from_freq(freq)\n\ntb.set_freq = custom_set_freq\n\
+      \ndef update_statistics_display():\n    \"\"\"Update the GUI with latest statistics\"\
+      \"\"\n    try:\n        # Get top channels by network count\n        top_channels\
+      \ = epy_block_1.get_top_channels(5)\n        if top_channels:\n            most_active_ch,\
+      \ most_active_count = top_channels[0]\n            activity_label.setText(\n\
+      \                f\" MOST ACTIVE CHANNEL: {most_active_ch} with \"\n       \
+      \         f\"{most_active_count} networks\"\n            )\n\n            occupancy_text\
+      \ = \"TOP CHANNELS BY NETWORK COUNT:\\n\"\n            for i, (ch, count) in\
+      \ enumerate(top_channels, 1):\n                occupancy_text += f\"  {i}. Channel\
+      \ {ch}: {count} networks\\n\"\n            occupancy_label.setText(occupancy_text.strip())\n\
+      \n        # Get best channels by RSSI\n        best_rssi_channels = epy_block_1.get_best_channels_by_rssi(5)\n\
       \        if best_rssi_channels:\n            rssi_text = \" BEST CHANNELS BY\
       \ SIGNAL STRENGTH:\\n\"\n            for i, (ch, avg_rssi, sample_count) in\
-      \ enumerate(best_rssi_channels, 1):\n                rssi_text += f\"  {i}.\
-      \ Channel {ch}: {avg_rssi:.1f} dBm avg ({sample_count} samples)\\n\"\n     \
-      \       rssi_label.setText(rssi_text.strip())\n\n        # Update graph if matplotlib\
+      \ enumerate(best_rssi_channels, 1):\n                rssi_text += (\n      \
+      \              f\"  {i}. Channel {ch}: {avg_rssi:.1f} dBm avg \"\n         \
+      \           f\"({sample_count} samples)\\n\"\n                )\n          \
+      \  rssi_label.setText(rssi_text.strip())\n\n        # Update graph if matplotlib\
       \ is available\n        if matplotlib_available and hasattr(tb, '_graph_update'):\n\
       \            tb._graph_update()\n    except Exception as e:\n        print(f\"\
-      [STATS] Error updating display: {e}\")\n\ndef sweep_channel():\n    if sweep_active[0]:\n\
-      \        try:\n            print(f\"[SWEEP] Switching to channel {channel_index[0]+1}/{len(channels)}...\"\
-      )\n            sweep_changing[0] = True  # Set flag before changing\n      \
-      \      original_set_freq(channels[channel_index[0]])\n            sweep_changing[0]\
-      \ = False  # Clear flag after changing\n            print(f\"[SWEEP] Now at:\
-      \ {channels[channel_index[0]]/1e9:.3f} GHz\")\n            channel_index[0]\
-      \ = (channel_index[0] + 1) % len(channels)\n\n            # Update statistics\
-      \ display\n            update_statistics_display()\n        except Exception\
-      \ as e:\n            sweep_changing[0] = False  # Clear flag on error\n    \
-      \        print(f\"[SWEEP] ERROR: {e}\")\n\ndef resume_sweep():\n    if not sweep_active[0]:\n\
+      \\n[STATS] Error updating display: {e}\")\n\ndef sweep_channel():\n    if sweep_active[0]:\n\
+      \        try:\n            print(\n                f\"\\n[SWEEP] Switching to\
+      \ sweep list index \"\n                f\"{channel_index[0]+1}/{len(channels)}...\"\
+      \n            )\n            sweep_changing[0] = True  # Set flag before changing\n\
+      \n            # Frequency for this step\n            freq = channels[channel_index[0]]\n\
+      \            original_set_freq(freq)\n            sweep_changing[0] = False\
+      \  # Clear flag after changing\n\n            wifi_ch = freq_to_wifi_channel(freq)\n\
+      \            if wifi_ch is not None:\n                print(\n             \
+      \       f\"[SWEEP] Now at: Wi-Fi ch {wifi_ch} \"\n                    f\"({freq/1e9:.3f}\
+      \ GHz)\"\n                )\n            else:\n                print(\n   \
+      \                 f\"[SWEEP] Now at: {freq/1e9:.3f} GHz (no Wi-Fi ch)\"\n  \
+      \              )\n\n            # Update on-screen current channel info\n  \
+      \          set_current_channel_label_from_freq(freq)\n\n            # Advance\
+      \ index for next sweep step\n            channel_index[0] = (channel_index[0]\
+      \ + 1) % len(channels)\n\n            # Update statistics display\n        \
+      \    update_statistics_display()\n        except Exception as e:\n         \
+      \   sweep_changing[0] = False  # Clear flag on error\n            print(f\"\\\
+      n[SWEEP] ERROR: {e}\")\n\ndef resume_sweep():\n    if not sweep_active[0]:\n\
       \        sweep_active[0] = True\n        tb._sweep_timer.start(time)\n     \
-      \   update_status_label()\n        print(f\"[SWEEP] Resumed! Continuing sweep\
-      \ from channel {channel_index[0]+1}/{len(channels)}.\")\n    else:\n       \
-      \ print(\"[SWEEP] Sweep is already active!\")\n\nresume_button = QPushButton(\"\
-      Resume Sweep\")\nresume_button.clicked.connect(resume_sweep)\ntb.top_layout.addWidget(resume_button)\n\
-      \n# Create statistics update timer (updates every 2 seconds)\ntb._stats_timer\
-      \ = QtCore.QTimer(tb)\ntb._stats_timer.timeout.connect(update_statistics_display)\n\
-      tb._stats_timer.start(2000)\n\nprint(\"[SWEEP] Starting automatic WiFi channel\
-      \ sweep...\")\nprint(f\"[SWEEP] Initial channel: {tb.freq / 1e9:.3f} GHz\")\n\
-      print(\"[SWEEP] Use dropdown to pause or 'Resume Sweep' button to continue.\"\
-      )\ntb._sweep_timer = QtCore.QTimer(tb)\ntb._sweep_timer.timeout.connect(sweep_channel)\n\
-      tb._sweep_timer.start(time)\nprint(f\"[SWEEP] Timer started! Changing channel\
-      \ every {time / 1000} seconds...\")\nprint(\"[STATS] Statistics display updating\
-      \ every 2 seconds...\")"
+      \   update_status_label()\n        print(\n            f\"\\n[SWEEP] Resumed!\
+      \ Continuing sweep from list index \"\n            f\"{channel_index[0]+1}/{len(channels)}.\"\
+      \n        )\n    else:\n        print(\"\\n[SWEEP] Sweep is already active!\"\
+      )\n\nresume_button = QPushButton(\"Resume Sweep\")\nresume_button.clicked.connect(resume_sweep)\n\
+      main_layout.addWidget(resume_button)\n\n# Create statistics update timer (updates\
+      \ every 2 seconds)\ntb._stats_timer = QtCore.QTimer(tb)\ntb._stats_timer.timeout.connect(update_statistics_display)\n\
+      tb._stats_timer.start(2000)\n\n# Add our sweep UI to the main top_layout (which\
+      \ is already in a QScrollArea)\ntb.top_layout.addWidget(main_widget)\n\nprint(\"\
+      [SWEEP] Starting automatic WiFi channel sweep...\")\nprint(f\"[SWEEP] Initial\
+      \ channel: {tb.freq / 1e9:.3f} GHz\")\nprint(\"[SWEEP] Use dropdown to pause\
+      \ or 'Resume Sweep' button to continue.\")\n\n# Align initial sweep index with\
+      \ current tb.freq\ntry:\n    current_freq = int(tb.freq)\n    if current_freq\
+      \ in channels:\n        current_idx = channels.index(current_freq)\n       \
+      \ channel_index[0] = (current_idx + 1) % len(channels)\n    else:\n        channel_index[0]\
+      \ = 0\n        print(\"\\n[SWEEP] Initial frequency not in sweep list; starting\
+      \ from first channel.\")\nexcept Exception as e:\n    channel_index[0] = 0\n\
+      \    print(\n        f\"\\n[SWEEP] Could not map initial freq to channel index,\
+      \ \"\n        f\"starting from first channel. Error: {e}\"\n    )\n\n# Initialize\
+      \ the current-channel label with initial freq\nset_current_channel_label_from_freq(tb.freq)\n\
+      \ntb._sweep_timer = QtCore.QTimer(tb)\ntb._sweep_timer.timeout.connect(sweep_channel)\n\
+      tb._sweep_timer.start(time)\nprint(f\"[SWEEP] Changing channel every {time //\
+      \ 1000} seconds.\")"
     comment: ''
     priority: '0'
     section: main_after_init
@@ -816,7 +926,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [912, 16.0]
+    coordinate: [1088, 8.0]
     rotation: 0
     state: enabled
 - name: snippet_0_0
@@ -841,7 +951,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1144, 16.0]
+    coordinate: [1080, 80.0]
     rotation: 0
     state: enabled
 
