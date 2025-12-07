@@ -28,7 +28,7 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 136.0]
+    coordinate: [8, 16.0]
     rotation: 0
     state: enabled
 
@@ -60,7 +60,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 576.0]
+    coordinate: [728, 8.0]
     rotation: 0
     state: enabled
 - name: freq
@@ -106,7 +106,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 224.0]
+    coordinate: [176, 8.0]
     rotation: 0
     state: enabled
 - name: samp_rate
@@ -118,7 +118,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 368.0]
+    coordinate: [352, 8.0]
     rotation: 0
     state: enabled
 - name: threshold
@@ -139,7 +139,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 440.0]
+    coordinate: [560, 8.0]
     rotation: 0
     state: enabled
 - name: window_size
@@ -151,7 +151,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [96, 368.0]
+    coordinate: [440, 8.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_0
@@ -167,7 +167,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1480, 128.0]
+    coordinate: [1520, 288.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_squared_0
@@ -183,7 +183,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [816, 256.0]
+    coordinate: [856, 416.0]
     rotation: 0
     state: enabled
 - name: blocks_conjugate_cc_0
@@ -198,7 +198,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [816, 104.0]
+    coordinate: [856, 264.0]
     rotation: 0
     state: enabled
 - name: blocks_delay_0
@@ -218,7 +218,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 16.0]
+    coordinate: [752, 176.0]
     rotation: 0
     state: enabled
 - name: blocks_delay_0_0
@@ -238,7 +238,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1272, 368.0]
+    coordinate: [1312, 528.0]
     rotation: 180
     state: enabled
 - name: blocks_divide_xx_0
@@ -256,7 +256,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1680, 128.0]
+    coordinate: [1720, 288.0]
     rotation: 0
     state: enabled
 - name: blocks_file_sink_0
@@ -266,7 +266,7 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: /home/wagner/Desktop/FEUP/MEEC/4_Ano/1semestre/CDIG/CDIG-T02-G08/wireshark.pcap
+    file: /tmp/gnuradio_wireshark.fifo
     type: byte
     unbuffered: 'True'
     vlen: '1'
@@ -274,7 +274,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1536, 496.0]
+    coordinate: [1576, 656.0]
     rotation: 0
     state: enabled
 - name: blocks_file_source_0
@@ -296,7 +296,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [0, 16.0]
+    coordinate: [40, 176.0]
     rotation: 0
     state: disabled
 - name: blocks_multiply_xx_0
@@ -314,7 +314,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1016, 112.0]
+    coordinate: [1056, 272.0]
     rotation: 0
     state: enabled
 - name: blocks_stream_to_vector_1
@@ -332,7 +332,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [800, 360.0]
+    coordinate: [840, 520.0]
     rotation: 180
     state: enabled
 - name: blocks_throttle2_0
@@ -353,129 +353,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [336, 88.0]
-    rotation: 0
-    state: disabled
-- name: epy_block_0
-  id: epy_block
-  parameters:
-    _source_code: "\"\"\"\nEmbedded Python Blocks:\n\nEach time this file is saved,\
-      \ GRC will instantiate the first class it finds\nto get ports and parameters\
-      \ of your block. The arguments to __init__  will\nbe the parameters. All of\
-      \ them are required to have default values!\n\"\"\"\n\nimport numpy as np\n\
-      from gnuradio import gr\nimport time\nimport threading\n\n\nclass blk(gr.sync_block):\n\
-      \    \"\"\"WiFi Channel Sweeper - Varre canais 2.4 GHz e 5 GHz automaticamente\"\
-      \"\"\n\n    def __init__(self, pluto_source=None, interval_seconds=10):\n  \
-      \      \"\"\"\n        pluto_source: Refer\xEAncia ao bloco PlutoSDR Source\n\
-      \        interval_seconds: Tempo em cada canal (default 10s)\n        \"\"\"\
-      \n        gr.sync_block.__init__(\n            self,\n            name='WiFi\
-      \ Channel Sweeper',\n            in_sig=None,\n            out_sig=None\n  \
-      \      )\n        \n        self.pluto_source = pluto_source\n        self.top_block\
-      \ = None  # Ser\xE1 detectado automaticamente\n        self.interval = interval_seconds\n\
-      \        self.running = False\n        self.sweep_thread = None\n        \n\
-      \        # Canais WiFi 2.4 GHz (1-11)\n        self.channels_24ghz = {\n   \
-      \         1: (2.412e9, '2.4GHz'),\n            2: (2.417e9, '2.4GHz'),\n   \
-      \         3: (2.422e9, '2.4GHz'),\n            4: (2.427e9, '2.4GHz'),\n   \
-      \         5: (2.432e9, '2.4GHz'),\n            6: (2.437e9, '2.4GHz'),\n   \
-      \         7: (2.442e9, '2.4GHz'),\n            8: (2.447e9, '2.4GHz'),\n   \
-      \         9: (2.452e9, '2.4GHz'),\n            10: (2.457e9, '2.4GHz'),\n  \
-      \          11: (2.462e9, '2.4GHz'),\n        }\n        \n        # Canais 5\
-      \ GHz mais comuns (802.11a/n/ac)\n        self.channels_5ghz = {\n         \
-      \   36: (5.180e9, '5GHz'),\n            40: (5.200e9, '5GHz'),\n           \
-      \ 44: (5.220e9, '5GHz'),\n            48: (5.240e9, '5GHz'),\n            52:\
-      \ (5.260e9, '5GHz'),\n            56: (5.280e9, '5GHz'),\n            60: (5.300e9,\
-      \ '5GHz'),\n            64: (5.320e9, '5GHz'),\n            149: (5.745e9, '5GHz'),\n\
-      \            153: (5.765e9, '5GHz'),\n            157: (5.785e9, '5GHz'),\n\
-      \            161: (5.805e9, '5GHz'),\n            165: (5.825e9, '5GHz'),\n\
-      \        }\n        \n        # Inicia a thread de detec\xE7\xE3o e sweep com\
-      \ delay\n        if pluto_source:\n            self.sweep_thread = threading.Thread(target=self._init_and_sweep,\
-      \ daemon=True)\n            self.sweep_thread.start()\n    \n    def _init_and_sweep(self):\n\
-      \        \"\"\"Detecta o top_block e inicia o sweep (com delay para inicializa\xE7\
-      \xE3o)\"\"\"\n        # Aguarda 2 segundos para o flowgraph inicializar completamente\n\
-      \        time.sleep(2)\n        \n        # Tenta detectar o top_block\n   \
-      \     try:\n            import inspect\n            frame = inspect.currentframe()\n\
-      \            for _ in range(15):  # Procura nos frames\n                if frame\
-      \ is None:\n                    break\n                if 'self' in frame.f_locals:\n\
-      \                    obj = frame.f_locals['self']\n                    if hasattr(obj,\
-      \ 'set_freq') and hasattr(obj, 'iio_pluto_source_0'):\n                    \
-      \    self.top_block = obj\n                        print(f\"[SWEEP] Top block\
-      \ detectado: {type(obj).__name__}\")\n                        break\n      \
-      \          frame = frame.f_back\n        except Exception as e:\n          \
-      \  print(f\"[SWEEP] Erro ao detectar top_block: {e}\")\n        \n        #\
-      \ Se n\xE3o detectou, tenta obter do parent do pluto_source\n        if self.top_block\
-      \ is None and self.pluto_source:\n            try:\n                # Navega\
-      \ na hierarquia do GNU Radio\n                if hasattr(self.pluto_source,\
-      \ 'to_basic_block'):\n                    basic_block = self.pluto_source.to_basic_block()\n\
-      \                    if hasattr(basic_block, 'detail'):\n                  \
-      \      detail = basic_block.detail()\n                        # Tenta acessar\
-      \ o flowgraph\n                        if hasattr(detail, 'owner'):\n      \
-      \                      parent = detail.owner()\n                           \
-      \ if hasattr(parent, 'set_freq'):\n                                self.top_block\
-      \ = parent\n                                print(f\"[SWEEP] Top block obtido\
-      \ via hierarquia GNU Radio\")\n            except Exception as e:\n        \
-      \        print(f\"[SWEEP] N\xE3o foi poss\xEDvel obter top_block via hierarquia:\
-      \ {e}\")\n        \n        if self.top_block and self.pluto_source:\n     \
-      \       self.start_sweep()\n        else:\n            print(\"[SWEEP ERRO]\
-      \ N\xE3o foi poss\xEDvel detectar o top_block automaticamente\")\n         \
-      \   print(f\"[SWEEP DEBUG] pluto_source={self.pluto_source}, top_block={self.top_block}\"\
-      )\n    \n    def start_sweep(self):\n        \"\"\"Inicia o sweep autom\xE1\
-      tico\"\"\"\n        if not self.running and self.pluto_source and self.top_block:\n\
-      \            self.running = True\n            self.sweep_thread = threading.Thread(target=self._sweep_loop,\
-      \ daemon=True)\n            self.sweep_thread.start()\n            print(\"\
-      [SWEEP] Iniciado - varrendo 2.4 GHz (canais 1-11) e 5 GHz (canais 36-165)\"\
-      )\n    \n    def stop_sweep(self):\n        \"\"\"Para o sweep\"\"\"\n     \
-      \   self.running = False\n        if self.sweep_thread:\n            self.sweep_thread.join(timeout=2)\n\
-      \        print(\"[SWEEP] Parado\")\n    \n    def _sweep_loop(self):\n     \
-      \   \"\"\"Loop principal do sweep\"\"\"\n        while self.running:\n     \
-      \       # Varre canais 2.4 GHz\n            print(f\"\\n{'#'*60}\")\n      \
-      \      print(f\"# Varrendo banda 2.4 GHz (802.11b/g/n)\")\n            print(f\"\
-      {'#'*60}\")\n            \n            for ch in sorted(self.channels_24ghz.keys()):\n\
-      \                if not self.running:\n                    break\n         \
-      \           \n                freq, band = self.channels_24ghz[ch]\n       \
-      \         try:\n                    # Atualizar PlutoSDR\n                 \
-      \   self.pluto_source.set_frequency(int(freq))\n                    # Atualizar\
-      \ vari\xE1vel freq no flowgraph (para o equalizer)\n                    self.top_block.set_freq(freq)\n\
-      \                    \n                    print(f\"\\n{'='*60}\")\n       \
-      \             print(f\"[SWEEP] Canal {ch} ({band}) - {freq/1e9:.3f} GHz\")\n\
-      \                    print(f\"{'='*60}\")\n                    \n          \
-      \          time.sleep(self.interval)\n                    \n               \
-      \ except Exception as e:\n                    print(f\"[SWEEP ERROR] Erro ao\
-      \ mudar para canal {ch}: {e}\")\n            \n            # Varre canais 5\
-      \ GHz\n            if self.running:\n                print(f\"\\n{'#'*60}\"\
-      )\n                print(f\"# Varrendo banda 5 GHz (802.11a/n/ac)\")\n     \
-      \           print(f\"{'#'*60}\")\n                \n                for ch in\
-      \ sorted(self.channels_5ghz.keys()):\n                    if not self.running:\n\
-      \                        break\n                        \n                 \
-      \   freq, band = self.channels_5ghz[ch]\n                    try:\n        \
-      \                # Atualizar PlutoSDR\n                        self.pluto_source.set_frequency(int(freq))\n\
-      \                        # Atualizar vari\xE1vel freq no flowgraph (para o equalizer)\n\
-      \                        self.top_block.set_freq(freq)\n                   \
-      \     \n                        print(f\"\\n{'='*60}\")\n                  \
-      \      print(f\"[SWEEP] Canal {ch} ({band}) - {freq/1e9:.3f} GHz\")\n      \
-      \                  print(f\"{'='*60}\")\n                        \n        \
-      \                time.sleep(self.interval)\n                        \n     \
-      \               except Exception as e:\n                        print(f\"[SWEEP\
-      \ ERROR] Erro ao mudar para canal {ch}: {e}\")\n            \n            if\
-      \ self.running:\n                print(f\"\\n[SWEEP] Ciclo completo (2.4GHz\
-      \ + 5GHz) - reiniciando...\")\n    \n    def stop(self):\n        \"\"\"Cleanup\
-      \ quando o flowgraph para\"\"\"\n        self.stop_sweep()\n        return True\n\
-      \    \n    def work(self, input_items, output_items):\n        \"\"\"N\xE3o\
-      \ processa samples\"\"\"\n        return 0\n"
-    affinity: ''
-    alias: ''
-    comment: ''
-    interval_seconds: '10'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    pluto_source: None
-  states:
-    _io_cache: ('WiFi Channel Sweeper', 'blk', [('pluto_source', 'None'), ('interval_seconds',
-      '10')], [], [], 'WiFi Channel Sweeper - Varre canais 2.4 GHz e 5 GHz automaticamente',
-      ['pluto_source'])
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [464, 696.0]
+    coordinate: [376, 248.0]
     rotation: 0
     state: disabled
 - name: epy_block_1
@@ -491,7 +369,24 @@ blocks:
       from gnuradio import filter\nfrom gnuradio.filter import firdes\nfrom gnuradio\
       \ import gr\nimport sys\nimport signal\nfrom PyQt5 import Qt\nfrom argparse\
       \ import ArgumentParser\nfrom gnuradio.eng_arg import eng_float, intx\nfrom\
-      \ gnuradio import eng_notation\nimport foo\nimport ieee802_11\n\n\n\n# Custom\
+      \ gnuradio import eng_notation\nimport foo\nimport ieee802_11\nfrom collections\
+      \ import defaultdict\nfrom datetime import datetime\n\n\n\n# Global statistics\
+      \ storage\nchannel_stats = {\n    'networks_per_channel': defaultdict(set),\
+      \  # channel -> set of SSIDs\n    'rssi_per_channel': defaultdict(list),   \
+      \  # channel -> list of RSSI values\n    'rssi_per_network': defaultdict(list),\
+      \     # SSID -> list of (timestamp, RSSI)\n    'detection_count': defaultdict(int),\
+      \       # SSID -> count\n    'last_seen': {},                            # SSID\
+      \ -> timestamp\n}\n\ndef get_channel_stats():\n    \"\"\"Returns formatted statistics\
+      \ about channel occupancy and signal strength\"\"\"\n    return channel_stats\n\
+      \ndef get_top_channels(n=5):\n    \"\"\"Returns top N channels by number of\
+      \ detected networks\"\"\"\n    channel_counts = [(ch, len(ssids)) for ch, ssids\
+      \ in channel_stats['networks_per_channel'].items()]\n    return sorted(channel_counts,\
+      \ key=lambda x: x[1], reverse=True)[:n]\n\ndef get_best_channels_by_rssi(n=5):\n\
+      \    \"\"\"Returns top N channels by average RSSI (signal strength)\"\"\"\n\
+      \    channel_avg_rssi = []\n    for ch, rssi_list in channel_stats['rssi_per_channel'].items():\n\
+      \        if rssi_list:\n            avg_rssi = sum(rssi_list) / len(rssi_list)\n\
+      \            channel_avg_rssi.append((ch, avg_rssi, len(rssi_list)))\n    return\
+      \ sorted(channel_avg_rssi, key=lambda x: x[1], reverse=True)[:n]\n\n\n# Custom\
       \ message handler for WiFi info\nclass wifi_info_printer(gr.basic_block):\n\
       \    def __init__(self):\n        gr.basic_block.__init__(self,\n          \
       \  name=\"WiFi Info Printer\",\n            in_sig=None,\n            out_sig=None)\n\
@@ -499,11 +394,51 @@ blocks:
       \ self.handle_msg)\n    \n    def handle_msg(self, msg):\n        try:\n   \
       \         meta = pmt.car(msg)\n            ssid = pmt.dict_ref(meta, pmt.intern('ssid'),\
       \ pmt.PMT_NIL)\n            freq = pmt.dict_ref(meta, pmt.intern('nominal frequency'),\
-      \ pmt.PMT_NIL)\n            \n            if not pmt.is_null(ssid) and not pmt.is_null(freq):\n\
-      \                ssid_str = pmt.symbol_to_string(ssid)\n                freq_val\
-      \ = pmt.to_double(freq)\n                channel = self.freq_to_channel(freq_val)\n\
-      \                print(f\"SSID: {ssid_str}  |  Channel: {channel} ({freq_val/1e9:.2f}\
-      \ GHz)\")\n        except Exception as e:\n            pass\n    \n    def freq_to_channel(self,\
+      \ pmt.PMT_NIL)\n            rssi = pmt.dict_ref(meta, pmt.intern('rssi'), pmt.PMT_NIL)\n\
+      \            \n            # Debug: print all available keys in metadata\n \
+      \           if False:  # Set to True for debugging\n                print(f\"\
+      [DEBUG] Message metadata keys: {pmt.to_python(meta)}\")\n            \n    \
+      \        if not pmt.is_null(ssid):\n                ssid_str = pmt.symbol_to_string(ssid)\n\
+      \                timestamp = datetime.now()\n                \n            \
+      \    # Update detection count and last seen\n                channel_stats['detection_count'][ssid_str]\
+      \ += 1\n                channel_stats['last_seen'][ssid_str] = timestamp\n \
+      \               \n                # Get frequency and channel info\n       \
+      \         channel = None\n                freq_val = None\n                \n\
+      \                if not pmt.is_null(freq):\n                    freq_val = pmt.to_double(freq)\n\
+      \                    channel = self.freq_to_channel(freq_val)\n            \
+      \    else:\n                    # Try to get current frequency from metadata\n\
+      \                    current_freq = pmt.dict_ref(meta, pmt.intern('frequency'),\
+      \ pmt.PMT_NIL)\n                    if not pmt.is_null(current_freq):\n    \
+      \                    freq_val = pmt.to_double(current_freq)\n              \
+      \          channel = self.freq_to_channel(freq_val)\n                \n    \
+      \            # Track networks per channel (even if frequency is unknown, use\
+      \ estimated channel)\n                if channel is not None and channel !=\
+      \ \"Unknown\":\n                    channel_stats['networks_per_channel'][channel].add(ssid_str)\n\
+      \                    \n                    # Track RSSI if available - try multiple\
+      \ fields\n                    rssi_val = None\n                    if not pmt.is_null(rssi):\n\
+      \                        rssi_val = pmt.to_double(rssi)\n                  \
+      \  else:\n                        # Try alternative RSSI fields\n          \
+      \              for rssi_key in ['snr', 'signal', 'rx_power']:\n            \
+      \                rssi_alt = pmt.dict_ref(meta, pmt.intern(rssi_key), pmt.PMT_NIL)\n\
+      \                            if not pmt.is_null(rssi_alt):\n               \
+      \                 rssi_val = pmt.to_double(rssi_alt)\n                     \
+      \           break\n                    \n                    if rssi_val is\
+      \ not None:\n                        channel_stats['rssi_per_channel'][channel].append(rssi_val)\n\
+      \                        channel_stats['rssi_per_network'][ssid_str].append((timestamp,\
+      \ rssi_val))\n                    # If no RSSI, don't add to rssi stats - only\
+      \ real signal strength data\n                    \n                    # Print\
+      \ detection\n                    if rssi_val is not None:\n                \
+      \        print(f\"SSID: {ssid_str}  |  Channel: {channel} ({freq_val/1e9:.2f}\
+      \ GHz)  |  RSSI: {rssi_val:.1f} dBm  |  Detections: {channel_stats['detection_count'][ssid_str]}\"\
+      )\n                    else:\n                        print(f\"SSID: {ssid_str}\
+      \  |  Channel: {channel} ({freq_val/1e9:.2f} GHz)  |  RSSI: N/A (estimated -70\
+      \ dBm)  |  Detections: {channel_stats['detection_count'][ssid_str]}\")\n   \
+      \             else:\n                    # SSID detected but no channel info\
+      \ - still count it\n                    print(f\"SSID: {ssid_str}  |  Channel:\
+      \ Unknown  |  Detections: {channel_stats['detection_count'][ssid_str]}\")\n\
+      \                    print(f\"[WiFi Info] Warning: No frequency information\
+      \ for SSID {ssid_str}\")\n        except Exception as e:\n            print(f\"\
+      [WiFi Info] Error processing message: {e}\")\n    \n    def freq_to_channel(self,\
       \ freq_hz):\n        # 5 GHz band channels\n        if 5000e6 < freq_hz < 6000e6:\n\
       \            channel = int((freq_hz - 5000e6) / 5e6)\n            return channel\n\
       \        # 2.4 GHz band channels\n        elif 2400e6 < freq_hz < 2500e6:\n\
@@ -520,7 +455,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1360, 648.0]
+    coordinate: [1352, 752.0]
     rotation: 0
     state: enabled
 - name: fft_vxx_0
@@ -541,7 +476,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [496, 352.0]
+    coordinate: [536, 512.0]
     rotation: 180
     state: enabled
 - name: fir_filter_xxx_0
@@ -560,7 +495,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1192, 112.0]
+    coordinate: [1232, 272.0]
     rotation: 0
     state: enabled
 - name: fir_filter_xxx_0_0
@@ -579,7 +514,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1112, 232.0]
+    coordinate: [1152, 392.0]
     rotation: 0
     state: enabled
 - name: foo_wireshark_connector_0
@@ -596,7 +531,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1288, 504.0]
+    coordinate: [1328, 664.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_decode_mac_0
@@ -613,7 +548,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [840, 504.0]
+    coordinate: [880, 664.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_frame_equalizer_0
@@ -633,7 +568,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [496, 504.0]
+    coordinate: [536, 664.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_parse_mac_0
@@ -650,7 +585,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1088, 504.0]
+    coordinate: [1128, 664.0]
     rotation: 0
     state: enabled
 - name: ieee802_11_sync_long_0
@@ -668,7 +603,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1008, 336.0]
+    coordinate: [1048, 496.0]
     rotation: 180
     state: enabled
 - name: ieee802_11_sync_short_0
@@ -687,7 +622,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1656, 320.0]
+    coordinate: [1696, 480.0]
     rotation: 180
     state: enabled
 - name: iio_pluto_source_0
@@ -718,7 +653,195 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [296, 172.0]
+    coordinate: [288, 364.0]
+    rotation: 0
+    state: enabled
+- name: snippet_0
+  id: snippet
+  parameters:
+    alias: ''
+    code: "# Sweep \n\nfrom PyQt5 import QtCore\nfrom PyQt5.QtWidgets import QPushButton,\
+      \ QLabel, QVBoxLayout, QHBoxLayout, QWidget, QTextEdit\nimport projeto_epy_block_1\
+      \ as epy_block_1\n\n# Import matplotlib for graphing\ntry:\n    import matplotlib\n\
+      \    matplotlib.use('Qt5Agg')\n    from matplotlib.backends.backend_qt5agg import\
+      \ FigureCanvasQTAgg as FigureCanvas\n    from matplotlib.figure import Figure\n\
+      \    import matplotlib.pyplot as plt\n    matplotlib_available = True\nexcept\
+      \ ImportError:\n    print(\"[GRAPH] Matplotlib not available. Install with:\
+      \ pip install matplotlib\")\n    matplotlib_available = False\n\n# Channel sweep\
+      \ setup\nchannels = [\n    2412000000, 2417000000, 2422000000, 2427000000, 2432000000,\
+      \ 2437000000,\n    2442000000, 2447000000, 2452000000, 2457000000, 2462000000,\
+      \ 2467000000,\n    2472000000, 2484000000, 5160000000, 5180000000, 5200000000,\
+      \ 5220000000,\n    5240000000, 5260000000, 5280000000, 5300000000, 5320000000,\
+      \ 5340000000,\n    5480000000, 5500000000, 5520000000, 5540000000, 5560000000,\
+      \ 5580000000,\n    5600000000, 5620000000, 5640000000, 5660000000, 5680000000,\
+      \ 5700000000,\n    5720000000, 5745000000, 5765000000, 5785000000, 5805000000,\
+      \ 5825000000,\n    5845000000, 5865000000, 5885000000\n]\nchannel_index = [0]\n\
+      sweep_active = [True]\nsweep_changing = [False]  # Flag to indicate sweep is\
+      \ changing frequency\n\ntb = self\ntb.resize(1200, 700)  # Ajuste o tamanho\
+      \ da janela principal conforme necess\xE1rio\ntime = 60000\n\n# Create status\
+      \ label\nstatus_label = QLabel(\" SWEEP MODE - Scanning all channels...\")\n\
+      status_label.setStyleSheet(\"QLabel { background-color: #4CAF50; color: white;\
+      \ padding: 10px; font-weight: bold; font-size: 14px; }\")\ntb.top_layout.addWidget(status_label)\n\
+      \n# Create statistics display widgets\nstats_widget = QWidget()\n\nstats_layout\
+      \ = QVBoxLayout()\nstats_layout.setContentsMargins(5, 5, 5, 5)\nstats_layout.setSpacing(5)\n\
+      \nactivity_label = QLabel(\"CHANNEL ACTIVITY - No data yet\")\nactivity_label.setStyleSheet(\"\
+      QLabel { background-color: #2196F3; color: white; padding: 4px; font-weight:\
+      \ bold; font-size: 11px; }\")\nstats_layout.addWidget(activity_label)\n\noccupancy_label\
+      \ = QLabel(\"TOP CHANNELS BY NETWORK COUNT - No data yet\")\noccupancy_label.setStyleSheet(\"\
+      QLabel { background-color: #9C27B0; color: white; padding: 4px; font-weight:\
+      \ bold; font-size: 11px; }\")\nstats_layout.addWidget(occupancy_label)\n\nrssi_label\
+      \ = QLabel(\"BEST CHANNELS BY SIGNAL STRENGTH - No data yet\")\nrssi_label.setStyleSheet(\"\
+      QLabel { background-color: #FF5722; color: white; padding: 4px; font-weight:\
+      \ bold; font-size: 11px; }\")\nstats_layout.addWidget(rssi_label)\n\nstats_widget.setLayout(stats_layout)\n\
+      tb.top_layout.addWidget(stats_widget)\n\n# Create matplotlib graph widget\n\n\
+      if matplotlib_available:\n    graph_widget = QWidget()\n    graph_layout = QVBoxLayout()\n\
+      \    graph_layout.setContentsMargins(5, 5, 5, 5)\n    graph_layout.setSpacing(5)\n\
+      \n    graph_label = QLabel(\"REAL-TIME CHANNEL ANALYSIS\")\n    graph_label.setStyleSheet(\"\
+      QLabel { background-color: #607D8B; color: white; padding: 4px; font-weight:\
+      \ bold; font-size: 11px; }\")\n    graph_layout.addWidget(graph_label)\n\n \
+      \   # Create figure with two subplots\n    fig = Figure(figsize=(10, 3.5), dpi=80)\n\
+      \    canvas = FigureCanvas(fig)\n\n    ax1 = fig.add_subplot(121)  # Left: Networks\
+      \ per channel\n    ax2 = fig.add_subplot(122)  # Right: Average RSSI per channel\n\
+      \n    graph_layout.addWidget(canvas)\n    graph_widget.setLayout(graph_layout)\n\
+      \    tb.top_layout.addWidget(graph_widget)\n\n    def update_graph():\n    \
+      \    \"\"\"Update the real-time graphs\"\"\"\n        try:\n            stats\
+      \ = epy_block_1.get_channel_stats()\n\n            # Clear previous plots\n\
+      \            ax1.clear()\n            ax2.clear()\n\n            # Plot 1: Networks\
+      \ per channel\n            if stats['networks_per_channel'] and len(stats['networks_per_channel'])\
+      \ > 0:\n                channels_list = sorted(stats['networks_per_channel'].keys())\n\
+      \                network_counts = [len(stats['networks_per_channel'][ch]) for\
+      \ ch in channels_list]\n\n                if channels_list and network_counts:\n\
+      \                    ax1.bar(range(len(channels_list)), network_counts, color='#2196F3',\
+      \ alpha=0.7)\n                    ax1.set_xticks(range(len(channels_list)))\n\
+      \                    ax1.set_xticklabels([str(ch) for ch in channels_list],\
+      \ rotation=45, ha='right', fontsize=8)\n                    ax1.set_xlabel('Channel',\
+      \ fontweight='bold')\n                    ax1.set_ylabel('Number of Networks',\
+      \ fontweight='bold')\n                    ax1.set_title('Networks Detected per\
+      \ Channel', fontweight='bold', fontsize=11)\n                    ax1.grid(axis='y',\
+      \ alpha=0.3)\n\n                    # Highlight most active channel\n      \
+      \              if network_counts:\n                        max_idx = network_counts.index(max(network_counts))\n\
+      \                        ax1.bar(max_idx, network_counts[max_idx], color='#4CAF50',\
+      \ alpha=0.9)\n            else:\n                # Show \"waiting for data\"\
+      \ message\n                ax1.text(0.5, 0.5, 'Waiting for network detections...',\
+      \ \n                        ha='center', va='center', transform=ax1.transAxes,\
+      \ fontsize=12)\n                ax1.set_title('Networks Detected per Channel',\
+      \ fontweight='bold', fontsize=11)\n\n            # Plot 2: Average RSSI per\
+      \ channel\n            if stats['rssi_per_channel']:\n                rssi_channels\
+      \ = sorted([ch for ch, rssi_list in stats['rssi_per_channel'].items() if rssi_list])\n\
+      \                \n                if rssi_channels and len(rssi_channels) >\
+      \ 0:\n                    avg_rssi = [sum(stats['rssi_per_channel'][ch])/len(stats['rssi_per_channel'][ch])\n\
+      \                               for ch in rssi_channels]\n\n               \
+      \     colors = ['#4CAF50' if rssi > -60 else '#FF9800' if rssi > -75 else '#F44336'\n\
+      \                             for rssi in avg_rssi]\n\n                    ax2.bar(range(len(rssi_channels)),\
+      \ avg_rssi, color=colors, alpha=0.7)\n                    ax2.set_xticks(range(len(rssi_channels)))\n\
+      \                    ax2.set_xticklabels([str(ch) for ch in rssi_channels],\
+      \ rotation=45, ha='right', fontsize=8)\n                    ax2.set_xlabel('Channel',\
+      \ fontweight='bold')\n                    ax2.set_ylabel('Average RSSI (dBm)',\
+      \ fontweight='bold')\n                    ax2.set_title('Signal Strength per\
+      \ Channel', fontweight='bold', fontsize=11)\n                    ax2.grid(axis='y',\
+      \ alpha=0.3)\n                    ax2.axhline(y=-60, color='green', linestyle='--',\
+      \ alpha=0.5, linewidth=1, label='Excellent')\n                    ax2.axhline(y=-75,\
+      \ color='orange', linestyle='--', alpha=0.5, linewidth=1, label='Good')\n  \
+      \                  ax2.legend(fontsize=8, loc='lower right')\n             \
+      \   else:\n                    # Show \"waiting for data\" message\n       \
+      \             ax2.text(0.5, 0.5, 'Waiting for RSSI data...', \n            \
+      \                ha='center', va='center', transform=ax2.transAxes, fontsize=12)\n\
+      \                    ax2.set_title('Signal Strength per Channel', fontweight='bold',\
+      \ fontsize=11)\n            else:\n                # Show \"waiting for data\"\
+      \ message\n                ax2.text(0.5, 0.5, 'Waiting for RSSI data...', \n\
+      \                        ha='center', va='center', transform=ax2.transAxes,\
+      \ fontsize=12)\n                ax2.set_title('Signal Strength per Channel',\
+      \ fontweight='bold', fontsize=11)\n\n            fig.tight_layout()\n      \
+      \      fig.subplots_adjust(top=0.9, bottom=0.1)\n            canvas.draw()\n\
+      \        except Exception as e:\n            # Silently handle errors when no\
+      \ data is available yet\n            pass\n\n    # Store update function and\
+      \ canvas for later use\n    tb._graph_update = update_graph\n    tb._graph_canvas\
+      \ = canvas\n\n# Save original set_freq\noriginal_set_freq = tb.set_freq\n\n\
+      def update_status_label():\n    if sweep_active[0]:\n        status_label.setText(\"\
+      \ SWEEP MODE - Scanning all channels...\")\n        status_label.setStyleSheet(\"\
+      QLabel { background-color: #4CAF50; color: white; padding: 10px; font-weight:\
+      \ bold; font-size: 14px; }\")\n    else:\n        status_label.setText(\" MANUAL\
+      \ MODE - Fixed channel selected\")\n        status_label.setStyleSheet(\"QLabel\
+      \ { background-color: #FF9800; color: white; padding: 10px; font-weight: bold;\
+      \ font-size: 14px; }\")\n\ndef custom_set_freq(freq):\n    # Only pause if this\
+      \ is a manual change (not from sweep itself)\n    if sweep_active[0] and not\
+      \ sweep_changing[0]:\n        sweep_active[0] = False\n        tb._sweep_timer.stop()\n\
+      \        update_status_label()\n        print(f\"[SWEEP] Paused! Manual change\
+      \ detected.\")\n        print(\"[SWEEP] Click 'Resume Sweep' button to continue.\"\
+      )\n    original_set_freq(freq)\n\ntb.set_freq = custom_set_freq\n\ndef update_statistics_display():\n\
+      \    \"\"\"Update the GUI with latest statistics\"\"\"\n    try:\n        #\
+      \ Get top channels by network count\n        top_channels = epy_block_1.get_top_channels(5)\n\
+      \        if top_channels:\n            most_active_ch, most_active_count = top_channels[0]\n\
+      \            activity_label.setText(f\" MOST ACTIVE CHANNEL: {most_active_ch}\
+      \ with {most_active_count} networks\")\n\n            occupancy_text = \"TOP\
+      \ CHANNELS BY NETWORK COUNT:\\n\"\n            for i, (ch, count) in enumerate(top_channels,\
+      \ 1):\n                occupancy_text += f\"  {i}. Channel {ch}: {count} networks\\\
+      n\"\n            occupancy_label.setText(occupancy_text.strip())\n\n       \
+      \ # Get best channels by RSSI\n        best_rssi_channels = epy_block_1.get_best_channels_by_rssi(5)\n\
+      \        if best_rssi_channels:\n            rssi_text = \" BEST CHANNELS BY\
+      \ SIGNAL STRENGTH:\\n\"\n            for i, (ch, avg_rssi, sample_count) in\
+      \ enumerate(best_rssi_channels, 1):\n                rssi_text += f\"  {i}.\
+      \ Channel {ch}: {avg_rssi:.1f} dBm avg ({sample_count} samples)\\n\"\n     \
+      \       rssi_label.setText(rssi_text.strip())\n\n        # Update graph if matplotlib\
+      \ is available\n        if matplotlib_available and hasattr(tb, '_graph_update'):\n\
+      \            tb._graph_update()\n    except Exception as e:\n        print(f\"\
+      [STATS] Error updating display: {e}\")\n\ndef sweep_channel():\n    if sweep_active[0]:\n\
+      \        try:\n            print(f\"[SWEEP] Switching to channel {channel_index[0]+1}/{len(channels)}...\"\
+      )\n            sweep_changing[0] = True  # Set flag before changing\n      \
+      \      original_set_freq(channels[channel_index[0]])\n            sweep_changing[0]\
+      \ = False  # Clear flag after changing\n            print(f\"[SWEEP] Now at:\
+      \ {channels[channel_index[0]]/1e9:.3f} GHz\")\n            channel_index[0]\
+      \ = (channel_index[0] + 1) % len(channels)\n\n            # Update statistics\
+      \ display\n            update_statistics_display()\n        except Exception\
+      \ as e:\n            sweep_changing[0] = False  # Clear flag on error\n    \
+      \        print(f\"[SWEEP] ERROR: {e}\")\n\ndef resume_sweep():\n    if not sweep_active[0]:\n\
+      \        sweep_active[0] = True\n        tb._sweep_timer.start(time)\n     \
+      \   update_status_label()\n        print(f\"[SWEEP] Resumed! Continuing sweep\
+      \ from channel {channel_index[0]+1}/{len(channels)}.\")\n    else:\n       \
+      \ print(\"[SWEEP] Sweep is already active!\")\n\nresume_button = QPushButton(\"\
+      Resume Sweep\")\nresume_button.clicked.connect(resume_sweep)\ntb.top_layout.addWidget(resume_button)\n\
+      \n# Create statistics update timer (updates every 2 seconds)\ntb._stats_timer\
+      \ = QtCore.QTimer(tb)\ntb._stats_timer.timeout.connect(update_statistics_display)\n\
+      tb._stats_timer.start(2000)\n\nprint(\"[SWEEP] Starting automatic WiFi channel\
+      \ sweep...\")\nprint(f\"[SWEEP] Initial channel: {tb.freq / 1e9:.3f} GHz\")\n\
+      print(\"[SWEEP] Use dropdown to pause or 'Resume Sweep' button to continue.\"\
+      )\ntb._sweep_timer = QtCore.QTimer(tb)\ntb._sweep_timer.timeout.connect(sweep_channel)\n\
+      tb._sweep_timer.start(time)\nprint(f\"[SWEEP] Timer started! Changing channel\
+      \ every {time / 1000} seconds...\")\nprint(\"[STATS] Statistics display updating\
+      \ every 2 seconds...\")"
+    comment: ''
+    priority: '0'
+    section: main_after_init
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [912, 16.0]
+    rotation: 0
+    state: enabled
+- name: snippet_0_0
+  id: snippet
+  parameters:
+    alias: ''
+    code: "# Snippet for wireshark\n\nimport os\nimport subprocess\nimport time\n\n\
+      # Path to the pipe\npipe_path = '/tmp/gnuradio_wireshark.fifo'\n\n# Remove old\
+      \ pipe if exists\nif os.path.exists(pipe_path):\n    os.remove(pipe_path)\n\n\
+      # Create named pipe\nos.mkfifo(pipe_path)\nprint(f\"[WIRESHARK] Pipe created:\
+      \ {pipe_path}\")\n\n# Launch Wireshark in background\ntry:\n    subprocess.Popen(['wireshark',\
+      \ '-k', '-i', pipe_path], \n                    stdout=subprocess.DEVNULL, \n\
+      \                    stderr=subprocess.DEVNULL)\n    print(\"[WIRESHARK] Wireshark\
+      \ launched! Wait for window to open...\")\n    time.sleep(2)  # Give Wireshark\
+      \ time to start\nexcept FileNotFoundError:\n    print(\"[WIRESHARK] ERROR: Wireshark\
+      \ not found! Install with: sudo apt install wireshark\")\nexcept Exception as\
+      \ e:\n    print(f\"[WIRESHARK] ERROR launching: {e}\")"
+    comment: ''
+    priority: '0'
+    section: init_before_blocks
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 16.0]
     rotation: 0
     state: enabled
 
