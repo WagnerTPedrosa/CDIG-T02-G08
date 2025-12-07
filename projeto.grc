@@ -653,7 +653,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [336, 332.0]
+    coordinate: [288, 364.0]
     rotation: 0
     state: enabled
 - name: snippet_0
@@ -677,26 +677,29 @@ blocks:
       \ 5700000000,\n    5720000000, 5745000000, 5765000000, 5785000000, 5805000000,\
       \ 5825000000,\n    5845000000, 5865000000, 5885000000\n]\nchannel_index = [0]\n\
       sweep_active = [True]\nsweep_changing = [False]  # Flag to indicate sweep is\
-      \ changing frequency\ntb = self\ntime = 60000\n\n# Create status label\nstatus_label\
-      \ = QLabel(\" SWEEP MODE - Scanning all channels...\")\nstatus_label.setStyleSheet(\"\
-      QLabel { background-color: #4CAF50; color: white; padding: 10px; font-weight:\
-      \ bold; font-size: 14px; }\")\ntb.top_layout.addWidget(status_label)\n\n# Create\
-      \ statistics display widgets\nstats_widget = QWidget()\nstats_layout = QVBoxLayout()\n\
+      \ changing frequency\n\ntb = self\ntb.resize(1200, 700)  # Ajuste o tamanho\
+      \ da janela principal conforme necess\xE1rio\ntime = 60000\n\n# Create status\
+      \ label\nstatus_label = QLabel(\" SWEEP MODE - Scanning all channels...\")\n\
+      status_label.setStyleSheet(\"QLabel { background-color: #4CAF50; color: white;\
+      \ padding: 10px; font-weight: bold; font-size: 14px; }\")\ntb.top_layout.addWidget(status_label)\n\
+      \n# Create statistics display widgets\nstats_widget = QWidget()\n\nstats_layout\
+      \ = QVBoxLayout()\nstats_layout.setContentsMargins(5, 5, 5, 5)\nstats_layout.setSpacing(5)\n\
       \nactivity_label = QLabel(\"CHANNEL ACTIVITY - No data yet\")\nactivity_label.setStyleSheet(\"\
-      QLabel { background-color: #2196F3; color: white; padding: 8px; font-weight:\
-      \ bold; font-size: 13px; }\")\nstats_layout.addWidget(activity_label)\n\noccupancy_label\
+      QLabel { background-color: #2196F3; color: white; padding: 4px; font-weight:\
+      \ bold; font-size: 11px; }\")\nstats_layout.addWidget(activity_label)\n\noccupancy_label\
       \ = QLabel(\"TOP CHANNELS BY NETWORK COUNT - No data yet\")\noccupancy_label.setStyleSheet(\"\
-      QLabel { background-color: #9C27B0; color: white; padding: 8px; font-weight:\
-      \ bold; font-size: 13px; }\")\nstats_layout.addWidget(occupancy_label)\n\nrssi_label\
+      QLabel { background-color: #9C27B0; color: white; padding: 4px; font-weight:\
+      \ bold; font-size: 11px; }\")\nstats_layout.addWidget(occupancy_label)\n\nrssi_label\
       \ = QLabel(\"BEST CHANNELS BY SIGNAL STRENGTH - No data yet\")\nrssi_label.setStyleSheet(\"\
-      QLabel { background-color: #FF5722; color: white; padding: 8px; font-weight:\
-      \ bold; font-size: 13px; }\")\nstats_layout.addWidget(rssi_label)\n\nstats_widget.setLayout(stats_layout)\n\
-      tb.top_layout.addWidget(stats_widget)\n\n# Create matplotlib graph widget\n\
+      QLabel { background-color: #FF5722; color: white; padding: 4px; font-weight:\
+      \ bold; font-size: 11px; }\")\nstats_layout.addWidget(rssi_label)\n\nstats_widget.setLayout(stats_layout)\n\
+      tb.top_layout.addWidget(stats_widget)\n\n# Create matplotlib graph widget\n\n\
       if matplotlib_available:\n    graph_widget = QWidget()\n    graph_layout = QVBoxLayout()\n\
+      \    graph_layout.setContentsMargins(5, 5, 5, 5)\n    graph_layout.setSpacing(5)\n\
       \n    graph_label = QLabel(\"REAL-TIME CHANNEL ANALYSIS\")\n    graph_label.setStyleSheet(\"\
-      QLabel { background-color: #607D8B; color: white; padding: 8px; font-weight:\
-      \ bold; font-size: 13px; }\")\n    graph_layout.addWidget(graph_label)\n\n \
-      \   # Create figure with two subplots\n    fig = Figure(figsize=(12, 6), dpi=80)\n\
+      QLabel { background-color: #607D8B; color: white; padding: 4px; font-weight:\
+      \ bold; font-size: 11px; }\")\n    graph_layout.addWidget(graph_label)\n\n \
+      \   # Create figure with two subplots\n    fig = Figure(figsize=(10, 3.5), dpi=80)\n\
       \    canvas = FigureCanvas(fig)\n\n    ax1 = fig.add_subplot(121)  # Left: Networks\
       \ per channel\n    ax2 = fig.add_subplot(122)  # Right: Average RSSI per channel\n\
       \n    graph_layout.addWidget(canvas)\n    graph_widget.setLayout(graph_layout)\n\
@@ -749,26 +752,26 @@ blocks:
       \                        ha='center', va='center', transform=ax2.transAxes,\
       \ fontsize=12)\n                ax2.set_title('Signal Strength per Channel',\
       \ fontweight='bold', fontsize=11)\n\n            fig.tight_layout()\n      \
-      \      canvas.draw()\n        except Exception as e:\n            # Silently\
-      \ handle errors when no data is available yet\n            pass\n\n    # Store\
-      \ update function and canvas for later use\n    tb._graph_update = update_graph\n\
-      \    tb._graph_canvas = canvas\n\n# Save original set_freq\noriginal_set_freq\
-      \ = tb.set_freq\n\ndef update_status_label():\n    if sweep_active[0]:\n   \
-      \     status_label.setText(\" SWEEP MODE - Scanning all channels...\")\n   \
-      \     status_label.setStyleSheet(\"QLabel { background-color: #4CAF50; color:\
-      \ white; padding: 10px; font-weight: bold; font-size: 14px; }\")\n    else:\n\
-      \        status_label.setText(\" MANUAL MODE - Fixed channel selected\")\n \
-      \       status_label.setStyleSheet(\"QLabel { background-color: #FF9800; color:\
-      \ white; padding: 10px; font-weight: bold; font-size: 14px; }\")\n\ndef custom_set_freq(freq):\n\
-      \    # Only pause if this is a manual change (not from sweep itself)\n    if\
-      \ sweep_active[0] and not sweep_changing[0]:\n        sweep_active[0] = False\n\
-      \        tb._sweep_timer.stop()\n        update_status_label()\n        print(f\"\
-      [SWEEP] Paused! Manual change detected.\")\n        print(\"[SWEEP] Click 'Resume\
-      \ Sweep' button to continue.\")\n    original_set_freq(freq)\n\ntb.set_freq\
-      \ = custom_set_freq\n\ndef update_statistics_display():\n    \"\"\"Update the\
-      \ GUI with latest statistics\"\"\"\n    try:\n        # Get top channels by\
-      \ network count\n        top_channels = epy_block_1.get_top_channels(5)\n  \
-      \      if top_channels:\n            most_active_ch, most_active_count = top_channels[0]\n\
+      \      fig.subplots_adjust(top=0.9, bottom=0.1)\n            canvas.draw()\n\
+      \        except Exception as e:\n            # Silently handle errors when no\
+      \ data is available yet\n            pass\n\n    # Store update function and\
+      \ canvas for later use\n    tb._graph_update = update_graph\n    tb._graph_canvas\
+      \ = canvas\n\n# Save original set_freq\noriginal_set_freq = tb.set_freq\n\n\
+      def update_status_label():\n    if sweep_active[0]:\n        status_label.setText(\"\
+      \ SWEEP MODE - Scanning all channels...\")\n        status_label.setStyleSheet(\"\
+      QLabel { background-color: #4CAF50; color: white; padding: 10px; font-weight:\
+      \ bold; font-size: 14px; }\")\n    else:\n        status_label.setText(\" MANUAL\
+      \ MODE - Fixed channel selected\")\n        status_label.setStyleSheet(\"QLabel\
+      \ { background-color: #FF9800; color: white; padding: 10px; font-weight: bold;\
+      \ font-size: 14px; }\")\n\ndef custom_set_freq(freq):\n    # Only pause if this\
+      \ is a manual change (not from sweep itself)\n    if sweep_active[0] and not\
+      \ sweep_changing[0]:\n        sweep_active[0] = False\n        tb._sweep_timer.stop()\n\
+      \        update_status_label()\n        print(f\"[SWEEP] Paused! Manual change\
+      \ detected.\")\n        print(\"[SWEEP] Click 'Resume Sweep' button to continue.\"\
+      )\n    original_set_freq(freq)\n\ntb.set_freq = custom_set_freq\n\ndef update_statistics_display():\n\
+      \    \"\"\"Update the GUI with latest statistics\"\"\"\n    try:\n        #\
+      \ Get top channels by network count\n        top_channels = epy_block_1.get_top_channels(5)\n\
+      \        if top_channels:\n            most_active_ch, most_active_count = top_channels[0]\n\
       \            activity_label.setText(f\" MOST ACTIVE CHANNEL: {most_active_ch}\
       \ with {most_active_count} networks\")\n\n            occupancy_text = \"TOP\
       \ CHANNELS BY NETWORK COUNT:\\n\"\n            for i, (ch, count) in enumerate(top_channels,\
@@ -813,7 +816,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [992, 8.0]
+    coordinate: [912, 16.0]
     rotation: 0
     state: enabled
 - name: snippet_0_0
@@ -838,7 +841,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1216, 8.0]
+    coordinate: [1144, 16.0]
     rotation: 0
     state: enabled
 

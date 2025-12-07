@@ -64,7 +64,9 @@ def snipfcn_snippet_0(self):
     channel_index = [0]
     sweep_active = [True]
     sweep_changing = [False]  # Flag to indicate sweep is changing frequency
+
     tb = self
+    tb.resize(1200, 700)  # Ajuste o tamanho da janela principal conforme necessário
     time = 60000
 
     # Create status label
@@ -74,34 +76,40 @@ def snipfcn_snippet_0(self):
 
     # Create statistics display widgets
     stats_widget = QWidget()
+
     stats_layout = QVBoxLayout()
+    stats_layout.setContentsMargins(5, 5, 5, 5)
+    stats_layout.setSpacing(5)
 
     activity_label = QLabel("CHANNEL ACTIVITY - No data yet")
-    activity_label.setStyleSheet("QLabel { background-color: #2196F3; color: white; padding: 8px; font-weight: bold; font-size: 13px; }")
+    activity_label.setStyleSheet("QLabel { background-color: #2196F3; color: white; padding: 4px; font-weight: bold; font-size: 11px; }")
     stats_layout.addWidget(activity_label)
 
     occupancy_label = QLabel("TOP CHANNELS BY NETWORK COUNT - No data yet")
-    occupancy_label.setStyleSheet("QLabel { background-color: #9C27B0; color: white; padding: 8px; font-weight: bold; font-size: 13px; }")
+    occupancy_label.setStyleSheet("QLabel { background-color: #9C27B0; color: white; padding: 4px; font-weight: bold; font-size: 11px; }")
     stats_layout.addWidget(occupancy_label)
 
     rssi_label = QLabel("BEST CHANNELS BY SIGNAL STRENGTH - No data yet")
-    rssi_label.setStyleSheet("QLabel { background-color: #FF5722; color: white; padding: 8px; font-weight: bold; font-size: 13px; }")
+    rssi_label.setStyleSheet("QLabel { background-color: #FF5722; color: white; padding: 4px; font-weight: bold; font-size: 11px; }")
     stats_layout.addWidget(rssi_label)
 
     stats_widget.setLayout(stats_layout)
     tb.top_layout.addWidget(stats_widget)
 
     # Create matplotlib graph widget
+
     if matplotlib_available:
         graph_widget = QWidget()
         graph_layout = QVBoxLayout()
+        graph_layout.setContentsMargins(5, 5, 5, 5)
+        graph_layout.setSpacing(5)
 
         graph_label = QLabel("REAL-TIME CHANNEL ANALYSIS")
-        graph_label.setStyleSheet("QLabel { background-color: #607D8B; color: white; padding: 8px; font-weight: bold; font-size: 13px; }")
+        graph_label.setStyleSheet("QLabel { background-color: #607D8B; color: white; padding: 4px; font-weight: bold; font-size: 11px; }")
         graph_layout.addWidget(graph_label)
 
         # Create figure with two subplots
-        fig = Figure(figsize=(12, 6), dpi=80)
+        fig = Figure(figsize=(10, 3.5), dpi=80)
         canvas = FigureCanvas(fig)
 
         ax1 = fig.add_subplot(121)  # Left: Networks per channel
@@ -177,6 +185,7 @@ def snipfcn_snippet_0(self):
                     ax2.set_title('Signal Strength per Channel', fontweight='bold', fontsize=11)
 
                 fig.tight_layout()
+                fig.subplots_adjust(top=0.9, bottom=0.1)
                 canvas.draw()
             except Exception as e:
                 # Silently handle errors when no data is available yet
