@@ -1,8 +1,5 @@
-# Build directories
-gr-my_blocks/build/
-**/build/
-**/Build/
-**/BUILD/
+# This project
+projeto_epy_block_1.py
 
 # Project specific folders
 Wifi_Project_Baseband_recordings/
