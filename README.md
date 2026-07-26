@@ -4,18 +4,18 @@ A complete IEEE 802.11a WiFi receiver implemented using GNU Radio and the ADALM-
 
 ## Table of Contents
 
-- [Digital Communications - T02-G08](#digital-communications---t02-g08)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
+- [WiFi OFDM Receiver](#wifi-ofdm-receiver)
+- [Table of Contents](#table-of-contents)
+- [Overview](#overview)
 - [Key Features](#key-features)
-  - [System Architecture](#system-architecture)
-  - [Results](#results)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [Running the Receiver](#running-the-receiver)
-    - [GUI Controls](#gui-controls)
-  - [Project Structure](#project-structure)
-  - [Contributors](#contributors)
+- [System Architecture](#system-architecture)
+- [Results](#results)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Running the Receiver](#running-the-receiver)
+- [GUI Controls](#gui-controls)
+- [Project Structure](#project-structure)
+- [Contributors](#contributors)
 
 ## Overview
 
