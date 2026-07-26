@@ -1,10 +1,12 @@
-# Digital Communications - T02-G08
+# WiFi OFDM Receiver
+
+A complete IEEE 802.11a WiFi receiver implemented using GNU Radio and the ADALM-PLUTO SDR.
 
 ## Table of Contents
 
 - [Digital Communications - T02-G08](#digital-communications---t02-g08)
   - [Table of Contents](#table-of-contents)
-  - [Description](#description)
+  - [Overview](#overview)
 - [Key Features](#key-features)
   - [System Architecture](#system-architecture)
   - [Results](#results)
@@ -15,9 +17,19 @@
   - [Project Structure](#project-structure)
   - [Contributors](#contributors)
 
-## Description
+## Overview
 
-This project implements a complete **IEEE 802.11a WiFi receiver** using GNU Radio and the ADALM-PLUTO SDR (PlutoSDR). The system is capable of capturing, demodulating, and decoding WiFi frames.
+This project implements a complete IEEE 802.11a WiFi receiver using GNU Radio and the ADALM-PLUTO SDR.
+
+The receiver performs the entire physical-layer processing chain, from IQ sample acquisition to MAC frame decoding, enabling real-time WiFi packet reception and network analysis.
+
+In addition to decoding WiFi traffic, the system includes:
+
+- Automatic WiFi channel scanning
+- Real-time network statistics
+- Signal strength visualization
+- Wireshark integration for packet inspection
+- Interactive GNU Radio GUI controls
 
 # Key Features
 
